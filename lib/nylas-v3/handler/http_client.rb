@@ -6,18 +6,18 @@ require_relative "../errors"
 require_relative "../version"
 
 # Module for working with HTTP Client
-module Nylas
+module NylasV3
   require "yajl"
   require "base64"
 
-  # Plain HTTP client that can be used to interact with the Nylas API without any type casting.
+  # Plain HTTP client that can be used to interact with the NylasV3 API without any type casting.
   module HttpClient
     protected
 
     attr_accessor :api_server
     attr_writer :default_headers
 
-    # Sends a request to the Nylas API. Returns a successful response if the request succeeds, or a
+    # Sends a request to the NylasV3 API. Returns a successful response if the request succeeds, or a
     # failed response if the request encounters a JSON parse error.
     #
     # @param method [Symbol] HTTP method for the API call. Either :get, :post, :delete, or :patch.
@@ -43,11 +43,11 @@ module Nylas
           parse_json_evaluate_error(result.code.to_i, response, path, content_type)
         end
       rescue Timeout::Error => _e
-        raise Nylas::NylasSdkTimeoutError.new(request.path, timeout)
+        raise NylasV3::NylasV3SdkTimeoutError.new(request.path, timeout)
       end
     end
 
-    # Sends a request to the Nylas API, specifically for downloading data.
+    # Sends a request to the NylasV3 API, specifically for downloading data.
     # This method supports streaming the response by passing a block, which will be executed
     # with each chunk of the response body as it is read. If no block is provided, the entire
     # response body is returned.
@@ -73,11 +73,11 @@ module Nylas
           handle_response(setup_http, get_request, path, &block)
         end
       rescue Net::OpenTimeout, Net::ReadTimeout
-        raise Nylas::NylasSdkTimeoutError.new(request[:url], timeout)
+        raise NylasV3::NylasV3SdkTimeoutError.new(request[:url], timeout)
       end
     end
 
-    # Builds a request sent to the Nylas API.
+    # Builds a request sent to the NylasV3 API.
     #
     # @param method [Symbol] HTTP method for the API call. Either :get, :post, :delete, or :patch.
     # @param path [String, nil] Relative path from the API Base.
@@ -108,23 +108,23 @@ module Nylas
     # Sets the default headers for API requests.
     def default_headers
       @default_headers ||= {
-        "X-Nylas-API-Wrapper" => "ruby",
-        "User-Agent" => "Nylas Ruby SDK #{Nylas::VERSION} - #{RUBY_VERSION}"
+        "X-NylasV3-API-Wrapper" => "ruby",
+        "User-Agent" => "NylasV3 Ruby SDK #{NylasV3::VERSION} - #{RUBY_VERSION}"
       }
     end
 
-    # Parses the response from the Nylas API.
+    # Parses the response from the NylasV3 API.
     def parse_response(response)
       return response if response.is_a?(Enumerable)
 
       Yajl::Parser.new(symbolize_names: true).parse(response)
     rescue Yajl::ParseError
-      raise Nylas::JsonParseError
+      raise NylasV3::JsonParseError
     end
 
     private
 
-    # Sends a request to the Nylas REST API.
+    # Sends a request to the NylasV3 REST API.
     #
     # @param method [Symbol] HTTP method for the API call. Either :get, :post, :delete, or :patch.
     # @param url [String] URL for the API call.
@@ -160,11 +160,11 @@ module Nylas
       end
     end
 
-    # Parses the response from the Nylas API and evaluates for errors.
+    # Parses the response from the NylasV3 API and evaluates for errors.
     def parse_json_evaluate_error(http_code, response, path, content_type = nil)
       begin
         response = parse_response(response) if content_type == "application/json"
-      rescue Nylas::JsonParseError
+      rescue NylasV3::JsonParseError
         handle_failed_response(http_code, response, path)
         raise
       end
@@ -173,7 +173,7 @@ module Nylas
       response
     end
 
-    # Handles failed responses from the Nylas API.
+    # Handles failed responses from the NylasV3 API.
     def handle_failed_response(http_code, response, path)
       return if HTTP_SUCCESS_CODES.include?(http_code)
 
@@ -181,7 +181,7 @@ module Nylas
       when Hash
         raise error_hash_to_exception(response, http_code, path)
       else
-        raise NylasApiError.parse_error_response(response, http_code)
+        raise NylasV3ApiError.parse_error_response(response, http_code)
       end
     end
 
@@ -190,7 +190,7 @@ module Nylas
       return if !response || !response.key?(:error)
 
       if %W[#{api_uri}/v3/connect/token #{api_uri}/v3/connect/revoke].include?(path)
-        NylasOAuthError.new(response[:error], response[:error_description], response[:error_uri],
+        NylasV3OAuthError.new(response[:error], response[:error_description], response[:error_uri],
                             response[:error_code], status_code)
       else
         throw_error(response, status_code)
@@ -201,7 +201,7 @@ module Nylas
       error_obj = response[:error]
       provider_error = error_obj.fetch(:provider_error, nil)
 
-      NylasApiError.new(error_obj[:type], error_obj[:message], status_code, provider_error,
+      NylasV3ApiError.new(error_obj[:type], error_obj[:message], status_code, provider_error,
                         response[:request_id])
     end
 

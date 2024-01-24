@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Nylas::Draft do
+describe NylasV3::Draft do
   # Restrict the ability to filter on a draft.
   it "is not filterable" do
     expect(described_class).not_to be_filterable
@@ -39,8 +39,8 @@ describe Nylas::Draft do
     context "with `files` key" do
       # If the files hash is present, remove it from the payload and set the file_ids hash key.
       it "if `files` present, remove from the payload and sets the proper file_ids key" do
-        api = instance_double(Nylas::API, execute: JSON.parse("{}"))
-        file = Nylas::File.new(id: "abc-123")
+        api = instance_double(NylasV3::API, execute: JSON.parse("{}"))
+        file = NylasV3::File.new(id: "abc-123")
         data = {
           id: "draft-1234"
         }
@@ -52,7 +52,7 @@ describe Nylas::Draft do
         draft.update(subject: "Updated subject", files: [file])
 
         expect(api).to have_received(:execute).with(
-          auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+          auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
           method: :put,
           path: "/drafts/draft-1234",
           payload: JSON.dump(
@@ -68,7 +68,7 @@ describe Nylas::Draft do
     context "when `files` key does not exists" do
       # Do not set the file_ids hash key or make changes to the payload.
       it "does not set the file_ids key or make any further changes to the payload" do
-        api = instance_double(Nylas::API, execute: JSON.parse("{}"))
+        api = instance_double(NylasV3::API, execute: JSON.parse("{}"))
         data = {
           id: "draft-1234"
         }
@@ -80,7 +80,7 @@ describe Nylas::Draft do
         draft.update(subject: "Updated subject")
 
         expect(api).to have_received(:execute).with(
-          auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+          auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
           method: :put,
           path: "/drafts/draft-1234",
           payload: JSON.dump(
@@ -97,7 +97,7 @@ describe Nylas::Draft do
         id: "draft-1234",
         version: 1
       }
-      api = instance_double(Nylas::API, execute: expected_response)
+      api = instance_double(NylasV3::API, execute: expected_response)
       data = {
         id: "draft-1234",
         version: 0
@@ -114,7 +114,7 @@ describe Nylas::Draft do
 
     # Send a draft's version number if the user does not manually add it.
     it "sends the version number if the user does not manually add it" do
-      api = instance_double(Nylas::API, execute: JSON.parse("{}"))
+      api = instance_double(NylasV3::API, execute: JSON.parse("{}"))
       data = {
         id: "draft-1234",
         subject: "This is a draft",
@@ -131,7 +131,7 @@ describe Nylas::Draft do
       draft.update(**updated)
 
       expect(api).to have_received(:execute).with(
-        auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+        auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
         method: :put,
         path: "/drafts/draft-1234",
         payload: JSON.dump(
@@ -149,8 +149,8 @@ describe Nylas::Draft do
     context "when `files` key exists" do
       # Remove the files hash from the payload and set the file_ids hash key.
       it "removes `files` from the payload and sets the proper file_ids key" do
-        api = instance_double(Nylas::API, execute: JSON.parse("{}"))
-        file = Nylas::File.new(id: "abc-123")
+        api = instance_double(NylasV3::API, execute: JSON.parse("{}"))
+        file = NylasV3::File.new(id: "abc-123")
         data = {
           id: "draft-1234",
           files: [file]
@@ -163,7 +163,7 @@ describe Nylas::Draft do
         draft.create
 
         expect(api).to have_received(:execute).with(
-          auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+          auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
           method: :post,
           path: "/drafts",
           payload: JSON.dump(
@@ -179,7 +179,7 @@ describe Nylas::Draft do
     context "when `files` key does not exists" do
       # Do not modify the files hash or the filed_ids hash.
       it "does nothing" do
-        api = instance_double(Nylas::API, execute: JSON.parse("{}"))
+        api = instance_double(NylasV3::API, execute: JSON.parse("{}"))
         data = {
           id: "draft-1234"
         }
@@ -191,7 +191,7 @@ describe Nylas::Draft do
         draft.create
 
         expect(api).to have_received(:execute).with(
-          auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+          auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
           method: :post,
           path: "/drafts",
           payload: JSON.dump(
@@ -209,8 +209,8 @@ describe Nylas::Draft do
     context "when `files` key exists" do
       # Remove the files hash from the payload and set the file_ids hash key.
       it "removes `files` from the payload and sets the proper file_ids key" do
-        api = instance_double(Nylas::API, execute: JSON.parse("{}"))
-        file = Nylas::File.new(id: "abc-123")
+        api = instance_double(NylasV3::API, execute: JSON.parse("{}"))
+        file = NylasV3::File.new(id: "abc-123")
         data = {
           id: "draft-1234",
           files: [file]
@@ -223,7 +223,7 @@ describe Nylas::Draft do
         draft.save
 
         expect(api).to have_received(:execute).with(
-          auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+          auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
           method: :put,
           path: "/drafts/draft-1234",
           payload: JSON.dump(
@@ -239,7 +239,7 @@ describe Nylas::Draft do
     context "when `files` key does not exists" do
       # Do not modify the files hash or the file_ids hash.
       it "does nothing" do
-        api = instance_double(Nylas::API, execute: JSON.parse("{}"))
+        api = instance_double(NylasV3::API, execute: JSON.parse("{}"))
         data = {
           id: "draft-1234"
         }
@@ -251,7 +251,7 @@ describe Nylas::Draft do
         draft.save
 
         expect(api).to have_received(:execute).with(
-          auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+          auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
           method: :put,
           path: "/drafts/draft-1234",
           payload: JSON.dump(
@@ -268,7 +268,7 @@ describe Nylas::Draft do
         id: "draft-1234",
         version: 1
       }
-      api = instance_double(Nylas::API, execute: expected_response)
+      api = instance_double(NylasV3::API, execute: expected_response)
       data = {
         id: "draft-1234"
       }
@@ -287,7 +287,7 @@ describe Nylas::Draft do
   describe "#send!" do
     # Send the payload if the draft was not created on the server.
     it "sends the payload if the draft was not created on the server" do
-      api = instance_double(Nylas::API)
+      api = instance_double(NylasV3::API)
       draft = described_class.from_hash({ reply_to_message_id: "mess-1234",
                                           to: [{ email: "to@example.com", name: "To Example" }],
                                           from: [{ email: "from@example.com", name: "From Example" }],
@@ -299,7 +299,7 @@ describe Nylas::Draft do
       draft.send!
 
       expect(api).to have_received(:execute).with(
-        auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+        auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
         method: :post,
         path: "/send",
         payload: update_json,
@@ -309,7 +309,7 @@ describe Nylas::Draft do
 
     # Allow tracking when a draft is sent.
     it "includes tracking when sending the draft" do
-      api = instance_double(Nylas::API)
+      api = instance_double(NylasV3::API)
       draft = described_class.from_hash({ id: "draft-1234", "version": 5 }, api: api)
       draft.tracking = { opens: true, links: true, thread_replies: true, payload: "this is a payload" }
       allow(api).to receive(:execute)
@@ -317,7 +317,7 @@ describe Nylas::Draft do
       draft.send!
 
       expect(api).to have_received(:execute).with(
-        auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+        auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
         method: :post,
         path: "/send",
         payload: JSON.dump(
@@ -333,7 +333,7 @@ describe Nylas::Draft do
   # Deserialize a draft's JSON attributes into Ruby objects.
   describe ".from_json" do
     it "Deserializes all the attributes into Ruby objects" do
-      api = instance_double(Nylas::API)
+      api = instance_double(NylasV3::API)
       data = { id: "drft-592", version: 0, object: "draft", account_id: "acc-9987", thread_id: "thread-1234",
                reply_to_message_id: "mess-1234", date: 1_513_276_982,
                to: [{ email: "to@example.com", name: "To Example" }],

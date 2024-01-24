@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Nylas::RawMessage do
+describe NylasV3::RawMessage do
   describe ".#send!" do
     it "calls execute on api with params" do
       message_string = "MIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\n" \

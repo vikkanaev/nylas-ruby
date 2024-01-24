@@ -4,12 +4,12 @@ require "spec_helper"
 
 # This spec is the only one that should have any webmock stuff going on, everything else should use
 # the FakeAPI to see what requests were made and what they included.
-describe Nylas::API do
+describe NylasV3::API do
   # Exchange an authorization code for a token.
   describe "#exchange_code_for_token" do
     # Retrieve an OAuth token using the existing authorization code.
     it "retrieves oauth token with code" do
-      client = Nylas::HttpClient.new(app_id: "fake-app", app_secret: "fake-secret")
+      client = NylasV3::HttpClient.new(app_id: "fake-app", app_secret: "fake-secret")
       data = {
         "client_id" => "fake-app",
         "client_secret" => "fake-secret",
@@ -31,7 +31,7 @@ describe Nylas::API do
 
     # Retrieve an authorization response from the server.
     it "retrieves full response from the server" do
-      client = Nylas::HttpClient.new(app_id: "fake-app", app_secret: "fake-secret")
+      client = NylasV3::HttpClient.new(app_id: "fake-app", app_secret: "fake-secret")
       data = {
         "client_id" => "fake-app",
         "client_secret" => "fake-secret",
@@ -146,15 +146,15 @@ describe Nylas::API do
     end
   end
 
-  # Return a Nylas::Collection object for contact group requests.
+  # Return a NylasV3::Collection object for contact group requests.
   describe "#contact_groups" do
-    it "returns Nylas::Collection for contact groups" do
-      client = instance_double("Nylas::HttpClient")
+    it "returns NylasV3::Collection for contact groups" do
+      client = instance_double("NylasV3::HttpClient")
       api = described_class.new(client: client)
 
       result = api.contact_groups
 
-      expect(result).to be_a(Nylas::Collection)
+      expect(result).to be_a(NylasV3::Collection)
     end
   end
 
@@ -162,7 +162,7 @@ describe Nylas::API do
   describe "#current_account" do
     # Retrieve the account related to the provided OAuth token.
     it "retrieves the account for the current OAuth Access Token" do
-      client = Nylas::HttpClient.new(app_id: "not-real", app_secret: "also-not-real",
+      client = NylasV3::HttpClient.new(app_id: "not-real", app_secret: "also-not-real",
                                      access_token: "seriously-unreal")
       allow(client).to receive(:execute).with(method: :get, path: "/account").and_return(id: 1234)
       api = described_class.new(client: client)
@@ -171,28 +171,28 @@ describe Nylas::API do
 
     # Generate and throw an exception if no OAuth token is set.
     it "raises an exception if there is not an access token set" do
-      client = Nylas::HttpClient.new(app_id: "not-real", app_secret: "also-not-real")
+      client = NylasV3::HttpClient.new(app_id: "not-real", app_secret: "also-not-real")
       allow(client).to receive(:execute).with(method: :get, path: "/account").and_return(id: 1234)
       api = described_class.new(client: client)
-      expect { api.current_account.id }.to raise_error Nylas::NoAuthToken,
+      expect { api.current_account.id }.to raise_error NylasV3::NoAuthToken,
                                                        "No access token was provided and the " \
                                                        "current_account method requires one"
     end
 
-    # Set the X-Nylas-Client-Id header.
-    it "sets X-Nylas-Client-Id header" do
-      client = Nylas::HttpClient.new(app_id: "not-real", app_secret: "also-not-real")
-      expect(client.default_headers).to include("X-Nylas-Client-Id" => "not-real")
+    # Set the X-NylasV3-Client-Id header.
+    it "sets X-NylasV3-Client-Id header" do
+      client = NylasV3::HttpClient.new(app_id: "not-real", app_secret: "also-not-real")
+      expect(client.default_headers).to include("X-NylasV3-Client-Id" => "not-real")
     end
   end
 
   # Get an account's status (either free or busy) based on its calendar availability.
   describe "#free_busy" do
-    it "returns `Nylas::FreeBusyCollection` for free busy details" do
+    it "returns `NylasV3::FreeBusyCollection` for free busy details" do
       emails = ["test@example.com", "anothertest@example.com"]
       start_time = 1_609_439_400
       end_time = 1_640_975_400
-      client = Nylas::HttpClient.new(
+      client = NylasV3::HttpClient.new(
         app_id: "not-real",
         app_secret: "also-not-real",
         access_token: "seriously-unreal"
@@ -228,7 +228,7 @@ describe Nylas::API do
         end_time: Time.at(end_time)
       )
 
-      expect(result).to be_a(Nylas::FreeBusyCollection)
+      expect(result).to be_a(NylasV3::FreeBusyCollection)
       free_busy = result.last
       expect(free_busy.object).to eq("free_busy")
       expect(free_busy.email).to eq("test@example.com")
@@ -244,7 +244,7 @@ describe Nylas::API do
   describe "application details" do
     # Get an application's details (name, icon, redirect URIs, and so on).
     it "gets the application details" do
-      client = Nylas::HttpClient.new(
+      client = NylasV3::HttpClient.new(
         app_id: "not-real",
         app_secret: "also-not-real"
       )
@@ -263,7 +263,7 @@ describe Nylas::API do
 
       app_details = api.application_details
 
-      expect(app_details).to be_a(Nylas::ApplicationDetail)
+      expect(app_details).to be_a(NylasV3::ApplicationDetail)
       expect(app_details.application_name).to eq("My New App Name")
       expect(app_details.icon_url).to eq("http://localhost/icon.png")
       expect(app_details.redirect_uris).to eq(%w[http://localhost/callback])
@@ -276,11 +276,11 @@ describe Nylas::API do
         icon_url: "http://localhost/updated_icon.png",
         redirect_uris: %w[http://localhost/callback http://localhost/updated]
       }
-      app_details = Nylas::ApplicationDetail.new
+      app_details = NylasV3::ApplicationDetail.new
       app_details.application_name = "Updated App Name"
       app_details.icon_url = "http://localhost/updated_icon.png"
       app_details.redirect_uris = %w[http://localhost/callback http://localhost/updated]
-      client = Nylas::HttpClient.new(
+      client = NylasV3::HttpClient.new(
         app_id: "not-real",
         app_secret: "also-not-real"
       )
@@ -294,7 +294,7 @@ describe Nylas::API do
 
       updated_app_details = api.update_application_details(app_details)
 
-      expect(updated_app_details).to be_a(Nylas::ApplicationDetail)
+      expect(updated_app_details).to be_a(NylasV3::ApplicationDetail)
     end
   end
 

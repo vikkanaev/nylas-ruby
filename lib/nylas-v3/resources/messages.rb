@@ -5,8 +5,8 @@ require_relative "smart_compose"
 require_relative "../handler/api_operations"
 require_relative "../utils/file_utils"
 
-module Nylas
-  # Nylas Messages API
+module NylasV3
+  # NylasV3 Messages API
   class Messages < Resource
     include ApiOperations::Get
     include ApiOperations::Post
@@ -16,7 +16,7 @@ module Nylas
     attr_reader :smart_compose
 
     # Initializes the messages resource.
-    # @param sdk_instance [Nylas::API] The API instance to which the resource is bound.
+    # @param sdk_instance [NylasV3::API] The API instance to which the resource is bound.
     def initialize(sdk_instance)
       super(sdk_instance)
       @smart_compose = SmartCompose.new(sdk_instance)

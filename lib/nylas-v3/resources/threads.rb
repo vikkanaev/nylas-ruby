@@ -3,8 +3,8 @@
 require_relative "resource"
 require_relative "../handler/api_operations"
 
-module Nylas
-  # Nylas Threads API
+module NylasV3
+  # NylasV3 Threads API
   class Threads < Resource
     include ApiOperations::Get
     include ApiOperations::Put

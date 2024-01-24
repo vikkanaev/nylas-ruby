@@ -2,9 +2,9 @@
 
 require "spec_helper"
 
-describe Nylas::OutboxMessage do
+describe NylasV3::OutboxMessage do
   it "Deserializes all the attributes into Ruby objects" do
-    api = instance_double(Nylas::API)
+    api = instance_double(NylasV3::API)
     data = { send_at: 1649179701, retry_limit_datetime: 1649266101, original_send_at: 1649179701,
              account_id: "acc-9987", thread_id: "thread-1234", reply_to_message_id: "mess-1234",
              date: 1_513_276_982, to: [{ email: "to@example.com", name: "To Example" }],

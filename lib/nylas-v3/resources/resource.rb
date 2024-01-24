@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-module Nylas
-  # NOTE: BaseResource is the base class for all Nylas API resources.
-  # Used by all Nylas API resources
+module NylasV3
+  # NOTE: BaseResource is the base class for all NylasV3 API resources.
+  # Used by all NylasV3 API resources
   class Resource
     # Initializes a resource.
     def initialize(sdk_instance)

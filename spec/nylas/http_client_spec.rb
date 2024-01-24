@@ -3,7 +3,7 @@
 require "spec_helper"
 require "webmock/rspec"
 
-describe Nylas::HttpClient do
+describe NylasV3::HttpClient do
   let(:full_json) do
     '{"snippet":"\u26a1\ufe0f Some text \ud83d","starred":false,"subject":"Updates"}'
   end
@@ -20,7 +20,7 @@ describe Nylas::HttpClient do
     # Raise an error if the JSON response cannot be deserialized.
     it "raises if the JSON is unable to be deserialized" do
       nylas = described_class.new(app_id: "id", app_secret: "secret", access_token: "token")
-      expect { nylas.parse_response("{{") }.to raise_error(Nylas::JsonParseError)
+      expect { nylas.parse_response("{{") }.to raise_error(NylasV3::JsonParseError)
     end
   end
 
@@ -45,7 +45,7 @@ describe Nylas::HttpClient do
       stub_request(:get, "https://api.nylas.com/contacts/1234")
         .to_return(status: 200, body: "abc", headers: { "Content-Type" => "Application/Json" })
 
-      expect { nylas.execute(method: :get, path: "/contacts/1234") }.to raise_error(Nylas::JsonParseError)
+      expect { nylas.execute(method: :get, path: "/contacts/1234") }.to raise_error(NylasV3::JsonParseError)
     end
 
     # Set the HTTP client to generate and throw an API error when the content-type is "application/json",
@@ -56,7 +56,7 @@ describe Nylas::HttpClient do
       stub_request(:get, "https://api.nylas.com/contacts/1234")
         .to_return(status: 400, body: "abc", headers: { "Content-Type" => "Application/Json" })
 
-      expect { nylas.execute(method: :get, path: "/contacts/1234") }.to raise_error(Nylas::InvalidRequest)
+      expect { nylas.execute(method: :get, path: "/contacts/1234") }.to raise_error(NylasV3::InvalidRequest)
     end
 
     # Set the HTTP client to skip parsing the response when the content-type is not "application/json".
@@ -72,8 +72,8 @@ describe Nylas::HttpClient do
   end
 
   describe "#execute" do
-    # Include the Nylas API version in the HTTP client's headers.
-    it "includes Nylas API Version in headers" do
+    # Include the NylasV3 API version in the HTTP client's headers.
+    it "includes NylasV3 API Version in headers" do
       supported_api_version = "2.5"
       nylas = described_class.new(app_id: "id", app_secret: "secret", access_token: "token")
       allow(RestClient::Request).to receive(:execute)
@@ -81,7 +81,7 @@ describe Nylas::HttpClient do
       nylas.execute(method: :get, path: "/contacts/1234/picture")
 
       expect(RestClient::Request).to have_received(:execute).with(
-        headers: hash_including("Nylas-API-Version" => supported_api_version),
+        headers: hash_including("NylasV3-API-Version" => supported_api_version),
         method: :get,
         payload: nil,
         timeout: 230,
@@ -104,21 +104,21 @@ describe Nylas::HttpClient do
   # Set and generate HTTP errors.
   describe "HTTP errors" do
     http_codes_errors = {
-      400 => Nylas::InvalidRequest,
-      401 => Nylas::UnauthorizedRequest,
-      402 => Nylas::MessageRejected,
-      403 => Nylas::AccessDenied,
-      404 => Nylas::ResourceNotFound,
-      405 => Nylas::MethodNotAllowed,
-      410 => Nylas::ResourceRemoved,
-      418 => Nylas::TeapotError,
-      422 => Nylas::MailProviderError,
-      429 => Nylas::SendingQuotaExceeded,
-      500 => Nylas::InternalError,
-      501 => Nylas::EndpointNotYetImplemented,
-      502 => Nylas::BadGateway,
-      503 => Nylas::ServiceUnavailable,
-      504 => Nylas::RequestTimedOut
+      400 => NylasV3::InvalidRequest,
+      401 => NylasV3::UnauthorizedRequest,
+      402 => NylasV3::MessageRejected,
+      403 => NylasV3::AccessDenied,
+      404 => NylasV3::ResourceNotFound,
+      405 => NylasV3::MethodNotAllowed,
+      410 => NylasV3::ResourceRemoved,
+      418 => NylasV3::TeapotError,
+      422 => NylasV3::MailProviderError,
+      429 => NylasV3::SendingQuotaExceeded,
+      500 => NylasV3::InternalError,
+      501 => NylasV3::EndpointNotYetImplemented,
+      502 => NylasV3::BadGateway,
+      503 => NylasV3::ServiceUnavailable,
+      504 => NylasV3::RequestTimedOut
     }
 
     http_codes_errors.each do |code, error|
@@ -169,7 +169,7 @@ describe Nylas::HttpClient do
         .to_return(status: 429, body: error_json, headers: error_headers)
 
       expect { nylas.execute(method: :get, path: "/contacts") }
-        .to raise_error(an_instance_of(Nylas::SendingQuotaExceeded)
+        .to raise_error(an_instance_of(NylasV3::SendingQuotaExceeded)
                          .and(having_attributes(
                                 rate_limit: 500,
                                 rate_limit_reset: 10

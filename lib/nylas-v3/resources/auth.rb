@@ -10,7 +10,7 @@ require_relative "resource"
 require_relative "grants"
 require_relative "../handler/api_operations"
 
-module Nylas
+module NylasV3
   # Auth
   class Auth < Resource
     include ApiOperations::Post
@@ -180,7 +180,7 @@ module Nylas
       Base64.strict_encode64(Digest::SHA256.digest(secret))
     end
 
-    # Sends the token request to the Nylas API.
+    # Sends the token request to the NylasV3 API.
     #
     # @param request [Hash] Code exchange request.
     def execute_token_request(request)

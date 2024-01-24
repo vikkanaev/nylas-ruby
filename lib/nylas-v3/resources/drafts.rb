@@ -4,8 +4,8 @@ require_relative "resource"
 require_relative "../handler/api_operations"
 require_relative "../utils/file_utils"
 
-module Nylas
-  # Nylas Drafts API
+module NylasV3
+  # NylasV3 Drafts API
   class Drafts < Resource
     include ApiOperations::Get
     include ApiOperations::Post

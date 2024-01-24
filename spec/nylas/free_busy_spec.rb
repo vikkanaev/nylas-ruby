@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Nylas::FreeBusy do
+describe NylasV3::FreeBusy do
   # Set read and write values for an email message.
   describe "#email" do
     it "reads and write value for email" do

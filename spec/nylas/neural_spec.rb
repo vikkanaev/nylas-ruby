@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Nylas::Neural do
+describe NylasV3::Neural do
   describe "Clean Conversation" do
     let(:data) do
       [
@@ -13,7 +13,7 @@ describe Nylas::Neural do
           from: [
             {
               email: "swag@nylas.com",
-              name: "Nylas Swag"
+              name: "NylasV3 Swag"
             }
           ],
           id: "abc123",
@@ -32,7 +32,7 @@ describe Nylas::Neural do
     end
 
     it "Deserializes all the attributes into Ruby objects" do
-      api = instance_double(Nylas::API, execute: data)
+      api = instance_double(NylasV3::API, execute: data)
       neural = described_class.new(api: api)
       clean_conversation = neural.clean_conversation(["abc123"])
 
@@ -52,9 +52,9 @@ describe Nylas::Neural do
     end
 
     it "Sends the options in the body" do
-      api = instance_double(Nylas::API, execute: data)
+      api = instance_double(NylasV3::API, execute: data)
       neural = described_class.new(api: api)
-      options = Nylas::NeuralMessageOptions.new(
+      options = NylasV3::NeuralMessageOptions.new(
         ignore_links: false,
         ignore_images: false,
         ignore_tables: false,
@@ -79,8 +79,8 @@ describe Nylas::Neural do
     end
 
     it "Parses the image correctly" do
-      api = instance_double(Nylas::API, execute: data)
-      files = instance_double(Nylas::Collection, find: Nylas::File.new(id: "file123"))
+      api = instance_double(NylasV3::API, execute: data)
+      files = instance_double(NylasV3::Collection, find: NylasV3::File.new(id: "file123"))
       allow(api).to receive(:files).and_return(files)
       neural = described_class.new(api: api)
       clean_conversation = neural.clean_conversation(["abc123"])
@@ -104,7 +104,7 @@ describe Nylas::Neural do
     end
 
     it "Deserializes the message request into Ruby objects" do
-      api = instance_double(Nylas::API, execute: [data])
+      api = instance_double(NylasV3::API, execute: [data])
       neural = described_class.new(api: api)
       sentiment = neural.sentiment_analysis_message(["abc123"])
 
@@ -125,7 +125,7 @@ describe Nylas::Neural do
     end
 
     it "Deserializes the text request into Ruby objects" do
-      api = instance_double(Nylas::API, execute: data)
+      api = instance_double(NylasV3::API, execute: data)
       neural = described_class.new(api: api)
       sentiment = neural.sentiment_analysis_text("This is some text")
 
@@ -151,11 +151,11 @@ describe Nylas::Neural do
         {
           account_id: "account123",
           body:
-            "This is the body<div>Nylas Swag</div><div>Software Engineer</div><div>123-456-8901</div>
+            "This is the body<div>NylasV3 Swag</div><div>Software Engineer</div><div>123-456-8901</div>
             <div>swag@nylas.com</div><img src='https://example.com/logo.png'
             alt='https://example.com/link.html'></a>",
           signature:
-            "Nylas Swag\n\nSoftware Engineer\n\n123-456-8901\nswag@nylas.com",
+            "NylasV3 Swag\n\nSoftware Engineer\n\n123-456-8901\nswag@nylas.com",
           contacts: {
             job_titles: ["Software Engineer"],
             links: [
@@ -168,7 +168,7 @@ describe Nylas::Neural do
             emails: ["swag@nylas.com"],
             names: [
               {
-                first_name: "Nylas",
+                first_name: "NylasV3",
                 last_name: "Swag"
               }
             ]
@@ -177,7 +177,7 @@ describe Nylas::Neural do
           from: [
             {
               email: "swag@nylas.com",
-              name: "Nylas Swag"
+              name: "NylasV3 Swag"
             }
           ],
           id: "abc123",
@@ -196,7 +196,7 @@ describe Nylas::Neural do
     end
 
     it "Deserializes all the attributes into Ruby objects" do
-      api = instance_double(Nylas::API, execute: data)
+      api = instance_double(NylasV3::API, execute: data)
       neural = described_class.new(api: api)
       signature = neural.extract_signature(["abc123"])
 
@@ -209,7 +209,7 @@ describe Nylas::Neural do
       )
 
       expect(signature.length).to be(1)
-      expect(signature[0].signature).to eql("Nylas Swag\n\nSoftware Engineer\n\n123-456-8901\nswag@nylas.com")
+      expect(signature[0].signature).to eql("NylasV3 Swag\n\nSoftware Engineer\n\n123-456-8901\nswag@nylas.com")
       expect(signature[0].model_version).to eql("0.0.1")
       expect(signature[0].contacts.job_titles).to eql(["Software Engineer"])
       expect(signature[0].contacts.phone_numbers).to eql(["123-456-8901"])
@@ -218,14 +218,14 @@ describe Nylas::Neural do
       expect(signature[0].contacts.links[0].description).to eql("string")
       expect(signature[0].contacts.links[0].url).to eql("https://example.com/link.html")
       expect(signature[0].contacts.names.length).to be(1)
-      expect(signature[0].contacts.names[0].first_name).to eql("Nylas")
+      expect(signature[0].contacts.names[0].first_name).to eql("NylasV3")
       expect(signature[0].contacts.names[0].last_name).to eql("Swag")
     end
 
     it "Sends the options in the body" do
-      api = instance_double(Nylas::API, execute: data)
+      api = instance_double(NylasV3::API, execute: data)
       neural = described_class.new(api: api)
-      options = Nylas::NeuralMessageOptions.new(
+      options = NylasV3::NeuralMessageOptions.new(
         ignore_links: false,
         ignore_images: false,
         ignore_tables: false,
@@ -250,13 +250,13 @@ describe Nylas::Neural do
       )
     end
 
-    it "Converts signature contact object to a Nylas contact object" do
-      api = instance_double(Nylas::API, execute: data)
+    it "Converts signature contact object to a NylasV3 contact object" do
+      api = instance_double(NylasV3::API, execute: data)
       neural = described_class.new(api: api)
       signature = neural.extract_signature(["abc123"])
       contact = signature[0].contacts.to_contact_object
 
-      expect(contact.given_name).to eql("Nylas")
+      expect(contact.given_name).to eql("NylasV3")
       expect(contact.surname).to eql("Swag")
       expect(contact.job_title).to eql("Software Engineer")
       expect(contact.emails.length).to be(1)
@@ -283,7 +283,7 @@ describe Nylas::Neural do
         from: [
           {
             email: "swag@nylas.com",
-            name: "Nylas Swag"
+            name: "NylasV3 Swag"
           }
         ],
         id: "abc123",
@@ -300,7 +300,7 @@ describe Nylas::Neural do
     end
 
     it "Deserializes all the attributes into Ruby objects" do
-      api = instance_double(Nylas::API, execute: [data])
+      api = instance_double(NylasV3::API, execute: [data])
       neural = described_class.new(api: api)
       categorize = neural.categorize(["abc123"])
 
@@ -321,7 +321,7 @@ describe Nylas::Neural do
     end
 
     it "Re-categorizes the message" do
-      api = instance_double(Nylas::API, execute: [data])
+      api = instance_double(NylasV3::API, execute: [data])
       neural = described_class.new(api: api)
       allow(api).to receive(:neural).and_return(neural)
       categorize = neural.categorize(["abc123"])
@@ -350,7 +350,7 @@ describe Nylas::Neural do
     end
 
     it "Deserializes all the attributes into Ruby objects" do
-      api = instance_double(Nylas::API, execute: data)
+      api = instance_double(NylasV3::API, execute: data)
       neural = described_class.new(api: api)
       ocr = neural.ocr_request("abc123")
 

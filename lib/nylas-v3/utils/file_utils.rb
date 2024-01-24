@@ -2,7 +2,7 @@
 
 require "mime/types"
 
-module Nylas
+module NylasV3
   # A collection of file-related utilities.
   module FileUtils
     # Build a form request for the API.

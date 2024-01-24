@@ -2,15 +2,15 @@
 
 require "spec_helper"
 
-describe Nylas::Scheduler do
+describe NylasV3::Scheduler do
   describe ".from_json" do
     it "Deserializes all the attributes into Ruby objects" do
-      client = Nylas::HttpClient.new(
+      client = NylasV3::HttpClient.new(
         app_id: "not-real",
         app_secret: "also-not-real",
         access_token: "seriously-unreal"
       )
-      api = Nylas::API.new(client: client)
+      api = NylasV3::API.new(client: client)
       data = {
         id: 123,
         app_client_id: "test-client-id",
@@ -30,7 +30,7 @@ describe Nylas::Scheduler do
       expect(scheduler.id).to be 123
       expect(scheduler.app_client_id).to eql "test-client-id"
       expect(scheduler.app_organization_id).to be 0
-      expect(scheduler.config).to be_a(Nylas::SchedulerConfig)
+      expect(scheduler.config).to be_a(NylasV3::SchedulerConfig)
       expect(scheduler.config.timezone).to eql "America/Los_Angeles"
       expect(scheduler.edit_token).to eql "token"
       expect(scheduler.name).to eql "Test"
@@ -40,12 +40,12 @@ describe Nylas::Scheduler do
     end
 
     it "uses 'api.schedule.nylas.com' endpoint" do
-      client = Nylas::HttpClient.new(
+      client = NylasV3::HttpClient.new(
         app_id: "not-real",
         app_secret: "also-not-real",
         access_token: "seriously-unreal"
       )
-      api = Nylas::API.new(client: client)
+      api = NylasV3::API.new(client: client)
 
       scheduler = api.scheduler
 
@@ -55,12 +55,12 @@ describe Nylas::Scheduler do
 
   describe "saving" do
     it "POST with no ID set" do
-      client = Nylas::HttpClient.new(
+      client = NylasV3::HttpClient.new(
         app_id: "not-real",
         app_secret: "also-not-real",
         access_token: "seriously-unreal"
       )
-      api = Nylas::API.new(client: client)
+      api = NylasV3::API.new(client: client)
       data = {
         app_client_id: "test-client-id",
         app_organization_id: 0,
@@ -79,7 +79,7 @@ describe Nylas::Scheduler do
       scheduler.save
 
       expect(api).to have_received(:execute).with(
-        auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+        auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
         method: :post,
         path: "/manage/pages",
         payload: JSON.dump(
@@ -99,12 +99,12 @@ describe Nylas::Scheduler do
     end
 
     it "PUT with ID set" do
-      client = Nylas::HttpClient.new(
+      client = NylasV3::HttpClient.new(
         app_id: "not-real",
         app_secret: "also-not-real",
         access_token: "seriously-unreal"
       )
-      api = Nylas::API.new(client: client)
+      api = NylasV3::API.new(client: client)
       data = {
         id: 123,
         app_client_id: "test-client-id",
@@ -124,7 +124,7 @@ describe Nylas::Scheduler do
       scheduler.save
 
       expect(api).to have_received(:execute).with(
-        auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+        auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
         method: :put,
         path: "/manage/pages/123",
         payload: JSON.dump(
@@ -146,12 +146,12 @@ describe Nylas::Scheduler do
 
   describe "get available calendars" do
     it "makes a request with an ID present" do
-      client = Nylas::HttpClient.new(
+      client = NylasV3::HttpClient.new(
         app_id: "not-real",
         app_secret: "also-not-real",
         access_token: "seriously-unreal"
       )
-      api = Nylas::API.new(client: client)
+      api = NylasV3::API.new(client: client)
       data = {
         id: 123
       }
@@ -167,12 +167,12 @@ describe Nylas::Scheduler do
     end
 
     it "throws an error if no ID present" do
-      client = Nylas::HttpClient.new(
+      client = NylasV3::HttpClient.new(
         app_id: "not-real",
         app_secret: "also-not-real",
         access_token: "seriously-unreal"
       )
-      api = Nylas::API.new(client: client)
+      api = NylasV3::API.new(client: client)
       scheduler = described_class.from_json(JSON.dump({}), api: api)
       allow(api).to receive(:execute).and_return({})
 
@@ -184,12 +184,12 @@ describe Nylas::Scheduler do
 
   describe "upload image" do
     it "makes a request with an ID present" do
-      client = Nylas::HttpClient.new(
+      client = NylasV3::HttpClient.new(
         app_id: "not-real",
         app_secret: "also-not-real",
         access_token: "seriously-unreal"
       )
-      api = Nylas::API.new(client: client)
+      api = NylasV3::API.new(client: client)
       data = {
         id: 123
       }
@@ -209,12 +209,12 @@ describe Nylas::Scheduler do
     end
 
     it "throws an error if no ID present" do
-      client = Nylas::HttpClient.new(
+      client = NylasV3::HttpClient.new(
         app_id: "not-real",
         app_secret: "also-not-real",
         access_token: "seriously-unreal"
       )
-      api = Nylas::API.new(client: client)
+      api = NylasV3::API.new(client: client)
       scheduler = described_class.from_json(JSON.dump({}), api: api)
       allow(api).to receive(:execute).and_return({})
 

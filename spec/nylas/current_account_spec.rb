@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Nylas::CurrentAccount do
+describe NylasV3::CurrentAccount do
   # Restrict the ability to filter the current account.
   it "is not filterable" do
     expect(described_class).not_to be_filterable

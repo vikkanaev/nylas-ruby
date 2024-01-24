@@ -3,8 +3,8 @@
 require_relative "resource"
 require_relative "../handler/api_operations"
 
-module Nylas
-  # Nylas Calendar API
+module NylasV3
+  # NylasV3 Calendar API
   class Calendars < Resource
     include ApiOperations::Get
     include ApiOperations::Post

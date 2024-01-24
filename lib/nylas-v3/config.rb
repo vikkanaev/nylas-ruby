@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Nylas
-  # Configuration options for the Nylas Ruby SDK.
+module NylasV3
+  # Configuration options for the NylasV3 Ruby SDK.
   module Config
     # The configuration options for supported regions.
     REGION_CONFIG = {
@@ -13,7 +13,7 @@ module Nylas
       }
     }.freeze
 
-    # The default API endpoint for the Nylas API.
+    # The default API endpoint for the NylasV3 API.
     DEFAULT_REGION_URL = REGION_CONFIG[:us][:nylas_api_url]
   end
 end

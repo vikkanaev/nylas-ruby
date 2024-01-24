@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Nylas::Deltas do
+describe NylasV3::Deltas do
   # Inflate an account.running event.
   it "safely inflates an account.running event" do
     data = {
@@ -28,7 +28,7 @@ describe Nylas::Deltas do
     expect(delta.date).to eql(Time.at(1_514_335_663))
     expect(delta.type).to eql "account.running"
     expect(delta.object).to eql "account"
-    expect(delta.model).to be_a Nylas::Account
+    expect(delta.model).to be_a NylasV3::Account
     expect(delta.id).to eql "dlt-09876"
     expect(delta.namespace_id).to eql "acc-2345"
     expect(delta.account_id).to eql "acc-2345"
@@ -79,7 +79,7 @@ describe Nylas::Deltas do
     delta = deltas.first
     expect(delta.date).to eql(Time.at(1_514_339_684))
     expect(delta.object).to eql("message")
-    expect(delta.model).to be_a Nylas::Message
+    expect(delta.model).to be_a NylasV3::Message
     expect(delta.model.id).to eql "msg-1234"
     expect(delta.model.thread_id).to eql "thread-098"
     expect(delta.model.received_date).to eql Time.at(1_514_339_665)
@@ -137,7 +137,7 @@ describe Nylas::Deltas do
         references: ["<evh5uy0shhpm5d0le89goor17-0@example.com>"]
       }
     )
-    expect(message_delta.model).to be_a(Nylas::Message)
+    expect(message_delta.model).to be_a(NylasV3::Message)
     expect(message_delta.id).to eq("message-id")
     expect(message_delta.account_id).to eq("acc-id")
     expect(message_delta.headers.in_reply_to).to eq("<evh5uy0shhpm5d0le89goor17-0@example.com>")
@@ -151,7 +151,7 @@ describe Nylas::Deltas do
       object: "event",
       id: "event-id"
     )
-    expect(event_delta.model).to be_a(Nylas::Event)
+    expect(event_delta.model).to be_a(NylasV3::Event)
     expect(event_delta.model.attributes.to_h).to include(
       account_id: "acc-id",
       object: "event",
@@ -176,7 +176,7 @@ describe Nylas::Deltas do
 
     expect(deltas.count).to eq(1)
     delta = deltas.last
-    expect(delta.model).to be_a(Nylas::Message)
+    expect(delta.model).to be_a(NylasV3::Message)
     expect(delta.attributes.to_h).to eq(
       object: "message"
     )
@@ -198,7 +198,7 @@ describe Nylas::Deltas do
     expect(deltas.count).to eq(1)
     delta = deltas.last
     expect(delta.id).to eq("some-id")
-    expect(delta.model).to be_a(Nylas::Event)
+    expect(delta.model).to be_a(NylasV3::Event)
     expect(delta.attributes.to_h).to eq(
       id: "some-id",
       object: "event"
@@ -222,7 +222,7 @@ describe Nylas::Deltas do
     expect(deltas.count).to eq(1)
     delta = deltas.last
     expect(delta.id).to eq("some-id")
-    expect(delta.model).to be_a(Nylas::Message)
+    expect(delta.model).to be_a(NylasV3::Message)
     expect(delta.attributes.to_h).to eq(
       id: "some-id",
       object: "message"

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Nylas::Label do
+describe NylasV3::Label do
   it "is not filterable" do
     expect(described_class).not_to be_filterable
   end

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Nylas::Contact do
+describe NylasV3::Contact do
   let(:full_json) do
     '{ "id": "1234", "object": "contact", "account_id": "12345", ' \
       '"given_name":"given", "middle_name": "middle", "surname": "surname", ' \
@@ -33,7 +33,7 @@ describe Nylas::Contact do
       contact.update(given_name: "Given", birthday: "2017-01-01",
                      emails: [
                        { type: "work", email: "given@other-job.example.com" },
-                       Nylas::EmailAddress.new(type: "home", email: "given@other-home.example.com")
+                       NylasV3::EmailAddress.new(type: "home", email: "given@other-home.example.com")
                      ])
       expect(contact.given_name).to eql "Given"
 

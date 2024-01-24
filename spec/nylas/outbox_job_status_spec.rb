@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Nylas::OutboxJobStatus do
+describe NylasV3::OutboxJobStatus do
   it "Deserializes all the attributes into Ruby objects" do
     data = { job_status_id: "job-status-123", status: "pending",
              original_data: { send_at: 1649179701, retry_limit_datetime: 1649266101,

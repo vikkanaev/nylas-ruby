@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-describe Nylas::Calendar do
+describe NylasV3::Calendar do
   # Set and modify JSON calendar attributes.
   describe "JSONs" do
     let(:calendar) do
-      api = instance_double(Nylas::API)
+      api = instance_double(NylasV3::API)
       data = {
         id: "cal-8766",
         object: "calendar",
@@ -41,7 +41,7 @@ describe Nylas::Calendar do
       expect(calendar.read_only).to be true
     end
 
-    # Serialize all JSON calendar attributes that are not Read-only for the Nylas API.
+    # Serialize all JSON calendar attributes that are not Read-only for the NylasV3 API.
     it "Serializes all non-read only attributes for the API" do
       expected_json = {
         id: "cal-8766",
@@ -67,7 +67,7 @@ describe Nylas::Calendar do
   # Serialize all calendar attributes into Ruby objects.
   describe "read on" do
     it "Serializes all the attributes into Ruby objects" do
-      api = instance_double(Nylas::API)
+      api = instance_double(NylasV3::API)
       data = {
         id: "cal-8766",
         object: "calendar",
@@ -104,9 +104,9 @@ describe Nylas::Calendar do
 
   # Check if a calendar is Read-only.
   describe "#read_only?" do
-    # Sends a call to the Nylas API and returns `true` when the calendar is Read-only.
+    # Sends a call to the NylasV3 API and returns `true` when the calendar is Read-only.
     it "returns true when read_only attribute from API return true" do
-      api = instance_double(Nylas::API)
+      api = instance_double(NylasV3::API)
       data = {
         read_only: true
       }
@@ -116,9 +116,9 @@ describe Nylas::Calendar do
       expect(calendar).to be_read_only
     end
 
-    # Send a call to the Nylas API. Returns false when the calendar is not Read-only.
+    # Send a call to the NylasV3 API. Returns false when the calendar is not Read-only.
     it "returns false when read_only attribute from API return false" do
-      api = instance_double(Nylas::API)
+      api = instance_double(NylasV3::API)
       data = {
         read_only: false
       }
@@ -131,9 +131,9 @@ describe Nylas::Calendar do
 
   # Check if a calendar is the primary for an account.
   describe "#primary?" do
-    # Send a call to the Nylas API. Returns true when the calendar is the primary for an account.
+    # Send a call to the NylasV3 API. Returns true when the calendar is the primary for an account.
     it "returns true when is_primary attribute from API return true" do
-      api = instance_double(Nylas::API)
+      api = instance_double(NylasV3::API)
       data = {
         is_primary: true
       }
@@ -143,9 +143,9 @@ describe Nylas::Calendar do
       expect(calendar).to be_primary
     end
 
-    # Send a call to the Nylas API. Returns false when the calendar is not the primary for an account.
+    # Send a call to the NylasV3 API. Returns false when the calendar is not the primary for an account.
     it "returns false when is_primary attribute from API return false" do
-      api = instance_double(Nylas::API)
+      api = instance_double(NylasV3::API)
       data = {
         is_primary: false
       }
@@ -159,8 +159,8 @@ describe Nylas::Calendar do
   # Set constraints for retrieveng events from a calendar.
   describe "#events" do
     it "sets the constraints properly for getting child events" do
-      api = instance_double(Nylas::API, execute: JSON.parse("{}"))
-      events = Nylas::EventCollection.new(model: Nylas::Event, api: api)
+      api = instance_double(NylasV3::API, execute: JSON.parse("{}"))
+      events = NylasV3::EventCollection.new(model: NylasV3::Event, api: api)
       allow(api).to receive(:events).and_return(events)
       data = {
         id: "cal-123"
@@ -169,12 +169,12 @@ describe Nylas::Calendar do
 
       event_collection = calendar.events
 
-      expect(event_collection).to be_a Nylas::EventCollection
+      expect(event_collection).to be_a NylasV3::EventCollection
 
       event_collection.execute
 
       expect(api).to have_received(:execute).with(
-        auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+        auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
         headers: {},
         method: :get,
         path: "/events",

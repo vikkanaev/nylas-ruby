@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Nylas::FilterAttributes do
+describe NylasV3::FilterAttributes do
   # Check an object's attributes against defined filters.
   describe "#check" do
     # Do not generate and throw an error when the attributes and allowed_attributes params are similar.

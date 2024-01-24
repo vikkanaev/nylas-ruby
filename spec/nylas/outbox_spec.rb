@@ -3,8 +3,8 @@
 require "spec_helper"
 require "date"
 
-describe Nylas::Outbox do
-  let(:api) { instance_double(Nylas::API) }
+describe NylasV3::Outbox do
+  let(:api) { instance_double(NylasV3::API) }
   let(:outbox) { described_class.new(api: api) }
   let(:tomorrow) { Date.today + 1 }
   let(:day_after) { Date.today + 2 }
@@ -15,7 +15,7 @@ describe Nylas::Outbox do
 
   describe "standard operations" do
     let(:draft) do
-      Nylas::Draft.new(to: [{ email: "not-a-real-email@example.com", name: "Example" }],
+      NylasV3::Draft.new(to: [{ email: "not-a-real-email@example.com", name: "Example" }],
                        subject: "A new draft!",
                        metadata: { sdk: "Ruby SDK" })
     end

@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-describe Nylas::Event do
+describe NylasV3::Event do
   # Deserialize an event's JSON attributes into Ruby objects.
   describe ".from_json" do
     it "Deserializes all the attributes into Ruby objects" do
-      api = instance_double(Nylas::API)
+      api = instance_double(NylasV3::API)
       data = {
         id: "event-8766",
         object: "event",
@@ -113,7 +113,7 @@ describe Nylas::Event do
   describe "busy?" do
     # Return true when the account's busy param is true.
     it "returns true when busy attribute from API return true" do
-      api = instance_double(Nylas::API)
+      api = instance_double(NylasV3::API)
       data = {
         account_id: "acc-1234",
         busy: true,
@@ -127,7 +127,7 @@ describe Nylas::Event do
 
     # Return false when the account's busy param is false.
     it "returns false when busy attribute from API return false" do
-      api = instance_double(Nylas::API)
+      api = instance_double(NylasV3::API)
       data = {
         account_id: "acc-1234",
         busy: false,
@@ -144,7 +144,7 @@ describe Nylas::Event do
   describe "#read_only?" do
     # Return true when the account calendar's read_only param is true.
     it "returns true when read_only attribute from API return true" do
-      api = instance_double(Nylas::API)
+      api = instance_double(NylasV3::API)
       data = {
         account_id: "acc-1234",
         read_only: true,
@@ -158,7 +158,7 @@ describe Nylas::Event do
 
     # Return false when the account calendar's read_only param is false.
     it "returns false when read_only attribute from API return false" do
-      api = instance_double(Nylas::API)
+      api = instance_double(NylasV3::API)
       data = {
         account_id: "acc-1234",
         read_only: false,
@@ -175,7 +175,7 @@ describe Nylas::Event do
   describe "#rsvp" do
     # Request an RSVP from attendees with the given status, and notify attendees.
     it "calls `Rsvp` with the given status and flag to notify_participants" do
-      api = instance_double(Nylas::API)
+      api = instance_double(NylasV3::API)
       data = {
         id: "event-123",
         account_id: "acc-1234",
@@ -183,12 +183,12 @@ describe Nylas::Event do
         calendar_id: "cal-0987"
       }
       rsvp = instance_double("Rsvp", save: nil)
-      allow(Nylas::Rsvp).to receive(:new).and_return(rsvp)
+      allow(NylasV3::Rsvp).to receive(:new).and_return(rsvp)
       event = described_class.from_json(JSON.dump(data), api: api)
 
       event.rsvp(:yes, notify_participants: true)
 
-      expect(Nylas::Rsvp).to have_received(:new).with(
+      expect(NylasV3::Rsvp).to have_received(:new).with(
         api: api,
         status: :yes,
         event_id: "event-123",
@@ -203,7 +203,7 @@ describe Nylas::Event do
   describe "account_id" do
     context "when saving" do
       it "is excluded from payload" do
-        api = instance_double(Nylas::API)
+        api = instance_double(NylasV3::API)
         allow(api).to receive(:execute).and_return({})
         data = {
           id: "event-id",
@@ -216,7 +216,7 @@ describe Nylas::Event do
         event.save
 
         expect(api).to have_received(:execute).with(
-          auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+          auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
           method: :put,
           path: "/events/event-id",
           payload: {
@@ -233,7 +233,7 @@ describe Nylas::Event do
   describe "object" do
     context "when saving" do
       it "is excluded from payload" do
-        api = instance_double(Nylas::API)
+        api = instance_double(NylasV3::API)
         allow(api).to receive(:execute).and_return({})
         data = {
           id: "event-id",
@@ -245,7 +245,7 @@ describe Nylas::Event do
         event.save
 
         expect(api).to have_received(:execute).with(
-          auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+          auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
           method: :put,
           path: "/events/event-id",
           payload: {
@@ -262,7 +262,7 @@ describe Nylas::Event do
     context "when saving" do
       # Exclude the ID from the payload when an event is saved.
       it "is excluded from payload" do
-        api = instance_double(Nylas::API)
+        api = instance_double(NylasV3::API)
         allow(api).to receive(:execute).and_return({})
         data = {
           id: "event-id",
@@ -273,7 +273,7 @@ describe Nylas::Event do
         event.save
 
         expect(api).to have_received(:execute).with(
-          auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+          auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
           method: :put,
           path: "/events/event-id",
           payload: {
@@ -285,7 +285,7 @@ describe Nylas::Event do
 
       # Always send a conferencing object, even if the settings are empty.
       it "sends the conferencing autocreate object even if settings is empty" do
-        api = instance_double(Nylas::API)
+        api = instance_double(NylasV3::API)
         allow(api).to receive(:execute).and_return({})
         data = {
           id: "event-id",
@@ -302,7 +302,7 @@ describe Nylas::Event do
         event.save
 
         expect(api).to have_received(:execute).with(
-          auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+          auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
           method: :put,
           path: "/events/event-id",
           payload: {
@@ -320,7 +320,7 @@ describe Nylas::Event do
 
       # Send a conferencing object if only the details param is set.
       it "sends the conferencing object if details alone is set" do
-        api = instance_double(Nylas::API)
+        api = instance_double(NylasV3::API)
         allow(api).to receive(:execute).and_return({})
         data = {
           id: "event-id",
@@ -342,7 +342,7 @@ describe Nylas::Event do
         event.save
 
         expect(api).to have_received(:execute).with(
-          auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+          auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
           method: :put,
           path: "/events/event-id",
           payload: {
@@ -365,7 +365,7 @@ describe Nylas::Event do
 
       # Generate and throw an error if both conferencing details and autocreate are set.
       it "throws an error if both conferencing details and autocreate are set" do
-        api = instance_double(Nylas::API)
+        api = instance_double(NylasV3::API)
         allow(api).to receive(:execute).and_return({})
         data = {
           id: "event-id",
@@ -393,7 +393,7 @@ describe Nylas::Event do
 
       # Generate and throw an error if the number of participants exceeds the event's capacity.
       it "throws an error if capacity is less than the amount of participants" do
-        api = instance_double(Nylas::API)
+        api = instance_double(NylasV3::API)
         allow(api).to receive(:execute).and_return({})
         data = {
           id: "event-id",
@@ -409,7 +409,7 @@ describe Nylas::Event do
 
       # Do not generate or throw an error if the event's capacity is -1.
       it "does not throw an error if capacity is -1" do
-        api = instance_double(Nylas::API)
+        api = instance_double(NylasV3::API)
         allow(api).to receive(:execute).and_return({})
         data = {
           id: "event-id",
@@ -425,7 +425,7 @@ describe Nylas::Event do
       # Do not generate or throw an error if the number of participants is less than or equal to the
       # event's capacity.
       it "does not throw an error if participants less than or equal to capacity" do
-        api = instance_double(Nylas::API)
+        api = instance_double(NylasV3::API)
         allow(api).to receive(:execute).and_return({})
         data = {
           id: "event-id",
@@ -448,7 +448,7 @@ describe Nylas::Event do
     context "when saving" do
       # Format the reminder_minutes param's numeric value to match the expected format.
       it "is formatted properly if set to a numeric value" do
-        api = instance_double(Nylas::API)
+        api = instance_double(NylasV3::API)
         allow(api).to receive(:execute).and_return({})
         data = {
           reminder_minutes: "20"
@@ -458,7 +458,7 @@ describe Nylas::Event do
         event.save
 
         expect(api).to have_received(:execute).with(
-          auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+          auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
           method: :post,
           path: "/events",
           payload: {
@@ -470,7 +470,7 @@ describe Nylas::Event do
 
       # Do not format the reminder_minutes param's value if it matches the expected format.
       it "is left as-is if user already formatted properly" do
-        api = instance_double(Nylas::API)
+        api = instance_double(NylasV3::API)
         allow(api).to receive(:execute).and_return({})
         data = {
           reminder_minutes: "[20]"
@@ -480,7 +480,7 @@ describe Nylas::Event do
         event.save
 
         expect(api).to have_received(:execute).with(
-          auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+          auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
           method: :post,
           path: "/events",
           payload: {
@@ -492,7 +492,7 @@ describe Nylas::Event do
 
       # Do not send a reminder if the reminder_minutes param is not set.
       it "does not send reminder_minutes if unset" do
-        api = instance_double(Nylas::API)
+        api = instance_double(NylasV3::API)
         allow(api).to receive(:execute).and_return({})
         data = {
           reminder_minutes: ""
@@ -502,7 +502,7 @@ describe Nylas::Event do
         event.save
 
         expect(api).to have_received(:execute).with(
-          auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+          auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
           method: :post,
           path: "/events",
           payload: {}.to_json,
@@ -518,7 +518,7 @@ describe Nylas::Event do
     context "when creating" do
       # Send the notify_participants param in the query params when an event is created.
       it "sends notify_participants in query params" do
-        api = instance_double(Nylas::API)
+        api = instance_double(NylasV3::API)
         allow(api).to receive(:execute).and_return({})
         data = {
           account_id: "acc-1234",
@@ -531,7 +531,7 @@ describe Nylas::Event do
         event.save
 
         expect(api).to have_received(:execute).with(
-          auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+          auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
           method: :post,
           path: "/events",
           payload: {
@@ -546,7 +546,7 @@ describe Nylas::Event do
 
       # Do not send query params when the notify_participants param is not set.
       it "sends nothing when `notify_participants` is not set" do
-        api = instance_double(Nylas::API)
+        api = instance_double(NylasV3::API)
         allow(api).to receive(:execute).and_return({})
         data = {
           account_id: "acc-1234",
@@ -558,7 +558,7 @@ describe Nylas::Event do
         event.save
 
         expect(api).to have_received(:execute).with(
-          auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+          auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
           method: :post,
           path: "/events",
           payload: {
@@ -574,7 +574,7 @@ describe Nylas::Event do
     context "when updating" do
       # Send the notify_participants param in the query params when an event is updated.
       it "sends notify_participants in query params" do
-        api = instance_double(Nylas::API)
+        api = instance_double(NylasV3::API)
         allow(api).to receive(:execute)
         data = {
           id: "event-8766",
@@ -588,7 +588,7 @@ describe Nylas::Event do
         event.update(location: "Somewhere else!")
 
         expect(api).to have_received(:execute).with(
-          auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+          auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
           method: :put,
           path: "/events/event-8766",
           payload: {
@@ -602,7 +602,7 @@ describe Nylas::Event do
 
       # Do not send query params when the notify_participants param is not set.
       it "sends nothing when `notify_participants` is not set" do
-        api = instance_double(Nylas::API)
+        api = instance_double(NylasV3::API)
         allow(api).to receive(:execute)
         data = {
           id: "event-8766",
@@ -615,7 +615,7 @@ describe Nylas::Event do
         event.update(location: "Somewhere else!")
 
         expect(api).to have_received(:execute).with(
-          auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+          auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
           method: :put,
           path: "/events/event-8766",
           payload: {
@@ -630,7 +630,7 @@ describe Nylas::Event do
     context "when deleting" do
       # Send the notify_participants param in the query params when the event is deleted.
       it "sends notify_participants in query params" do
-        api = instance_double(Nylas::API)
+        api = instance_double(NylasV3::API)
         allow(api).to receive(:execute)
         data = {
           id: "event-8766",
@@ -644,7 +644,7 @@ describe Nylas::Event do
         event.destroy
 
         expect(api).to have_received(:execute).with(
-          auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+          auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
           method: :delete,
           path: "/events/event-8766",
           payload: nil,
@@ -656,7 +656,7 @@ describe Nylas::Event do
 
       # Do not send query params when the notify_participants param is not set.
       it "sends nothing when `notify_participants` is not set" do
-        api = instance_double(Nylas::API)
+        api = instance_double(NylasV3::API)
         allow(api).to receive(:execute)
         data = {
           id: "event-8766",
@@ -669,7 +669,7 @@ describe Nylas::Event do
         event.destroy
 
         expect(api).to have_received(:execute).with(
-          auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+          auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
           method: :delete,
           path: "/events/event-8766",
           payload: nil,
@@ -683,7 +683,7 @@ describe Nylas::Event do
   describe "generating an ICS" do
     # Send the event ID when the ICS file is generated.
     it "sends the event ID if set" do
-      api = instance_double(Nylas::API)
+      api = instance_double(NylasV3::API)
       allow(api).to receive(:execute).and_return({})
       data = {
         id: "event-id",
@@ -709,7 +709,7 @@ describe Nylas::Event do
 
     # If the event ID is not set, send the event object when the ICS file is generated.
     it "sends the event object if event id is not set" do
-      api = instance_double(Nylas::API)
+      api = instance_double(NylasV3::API)
       allow(api).to receive(:execute).and_return({})
       data = {
         calendar_id: "cal-0987",
@@ -739,7 +739,7 @@ describe Nylas::Event do
 
     # Generate and throw an error if the event's calendar ID is not set.
     it "throws an error if event has no calendar ID set" do
-      api = instance_double(Nylas::API)
+      api = instance_double(NylasV3::API)
       allow(api).to receive(:execute).and_return({})
       data = {
         title: "An Event",
@@ -756,7 +756,7 @@ describe Nylas::Event do
 
     # Generate and throw an error if the event does not have a set object.
     it "throws an error if event has no when object set" do
-      api = instance_double(Nylas::API)
+      api = instance_double(NylasV3::API)
       allow(api).to receive(:execute).and_return({})
       data = {
         calendar_id: "cal-0987",

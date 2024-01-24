@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Nylas::Collection do
+describe NylasV3::Collection do
   def example_instance_json
     '{ "id": "1234" }'
   end
@@ -19,7 +19,7 @@ describe Nylas::Collection do
     it "Returns an enumerable for a single page of results, filtered by `offset` and `limit` and `where`" do
       allow(api).to receive(:execute)
         .with(
-          auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+          auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
           method: :get,
           path: "/collection",
           query: { limit: 100, offset: 0 },
@@ -37,7 +37,7 @@ describe Nylas::Collection do
     it "allows you to use a block directly" do
       allow(api).to receive(:execute)
         .with(
-          auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+          auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
           method: :get,
           path: "/collection",
           query: { limit: 100, offset: 0 },
@@ -62,7 +62,7 @@ describe Nylas::Collection do
       collection = described_class.new(model: FullModel, api: api)
       allow(api).to receive(:execute)
         .with(
-          auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+          auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
           method: :get,
           path: "/collection",
           query: { limit: 100, offset: 0 },
@@ -71,7 +71,7 @@ describe Nylas::Collection do
 
       allow(api).to receive(:execute)
         .with(
-          auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+          auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
           method: :get,
           path: "/collection",
           query: { limit: 100, offset: 100 },
@@ -88,7 +88,7 @@ describe Nylas::Collection do
     it "retrieves a single object, without filtering based upon `where` clauses earlier in the chain" do
       collection = described_class.new(model: FullModel, api: api)
       allow(api).to receive(:execute).with(
-        auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+        auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
         method: :get,
         path: "/collection/1234",
         query: {},
@@ -111,7 +111,7 @@ describe Nylas::Collection do
       expect(instance.id).to eql "1234"
       expect(instance.api).to eq(api)
       expect(api).to have_received(:execute).with(
-        auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+        auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
         method: :get,
         path: "/collection/1234",
         query: { view: "expanded" },
@@ -129,7 +129,7 @@ describe Nylas::Collection do
       expect(instance.id).to eql "1234"
       expect(instance.api).to eq(api)
       expect(api).to have_received(:execute).with(
-        auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+        auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
         method: :get,
         path: "/collection/1234",
         query: {},
@@ -148,7 +148,7 @@ describe Nylas::Collection do
         ]
       )
       allow(api).to receive(:execute).with(
-        auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+        auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
         method: :get,
         path: "/collection/1234",
         query: {},
@@ -165,7 +165,7 @@ describe Nylas::Collection do
   describe "#where" do
     it "raises a NotImplementedError stating the model is not searchable when the model is not searchable" do
       collection = described_class.new(model: NonFilterableModel, api: api)
-      expect { collection.where(id: "1234") }.to raise_error(Nylas::ModelNotFilterableError)
+      expect { collection.where(id: "1234") }.to raise_error(NylasV3::ModelNotFilterableError)
     end
   end
 
@@ -175,7 +175,7 @@ describe Nylas::Collection do
     it "sends the data to the appropriate endpoint using a post"
     it "Raises a not implemented error if the model is not creatable" do
       collection = described_class.new(model: NotCreatableModel, api: api)
-      expect { collection.create(string: "1234") }.to raise_error(Nylas::ModelNotCreatableError)
+      expect { collection.create(string: "1234") }.to raise_error(NylasV3::ModelNotCreatableError)
     end
   end
 
@@ -187,7 +187,7 @@ describe Nylas::Collection do
       collection = described_class.new(model: FullModel, api: api)
       allow(api).to receive(:execute)
         .with(
-          auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+          auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
           method: :get,
           path: "/collection",
           query: { limit: 100, offset: 0, view: "count" },
@@ -202,7 +202,7 @@ describe Nylas::Collection do
       collection = described_class.new(model: FullModel, api: api)
       allow(api).to receive(:execute)
         .with(
-          auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+          auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
           method: :get,
           path: "/collection",
           query: { id: "1234", limit: 100, offset: 0, view: "count" },
@@ -219,7 +219,7 @@ describe Nylas::Collection do
         collection = described_class.new(model: FullModel, api: api)
         allow(api).to receive(:execute)
           .with(
-            auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+            auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
             method: :get,
             path: "/collection",
             query: { limit: 100, offset: 0 },
@@ -234,27 +234,27 @@ describe Nylas::Collection do
   # Set and generate HTTP errors.
   describe "HTTP errors" do
     http_codes_errors = {
-      400 => Nylas::InvalidRequest,
-      401 => Nylas::UnauthorizedRequest,
-      402 => Nylas::MessageRejected,
-      403 => Nylas::AccessDenied,
-      404 => Nylas::ResourceNotFound,
-      405 => Nylas::MethodNotAllowed,
-      410 => Nylas::ResourceRemoved,
-      418 => Nylas::TeapotError,
-      422 => Nylas::MailProviderError,
-      429 => Nylas::SendingQuotaExceeded,
-      500 => Nylas::InternalError,
-      501 => Nylas::EndpointNotYetImplemented,
-      502 => Nylas::BadGateway,
-      503 => Nylas::ServiceUnavailable,
-      504 => Nylas::RequestTimedOut
+      400 => NylasV3::InvalidRequest,
+      401 => NylasV3::UnauthorizedRequest,
+      402 => NylasV3::MessageRejected,
+      403 => NylasV3::AccessDenied,
+      404 => NylasV3::ResourceNotFound,
+      405 => NylasV3::MethodNotAllowed,
+      410 => NylasV3::ResourceRemoved,
+      418 => NylasV3::TeapotError,
+      422 => NylasV3::MailProviderError,
+      429 => NylasV3::SendingQuotaExceeded,
+      500 => NylasV3::InternalError,
+      501 => NylasV3::EndpointNotYetImplemented,
+      502 => NylasV3::BadGateway,
+      503 => NylasV3::ServiceUnavailable,
+      504 => NylasV3::RequestTimedOut
     }
 
     http_codes_errors.each do |code, error|
       # Generate and throw an error based on the error type and error code.
       it "raises error if API returns #{error} with #{code}" do
-        api = Nylas::API.new
+        api = NylasV3::API.new
         model = instance_double("Model")
         allow(model).to receive(:searchable?).and_return(true)
         allow(model).to receive(:resources_path)

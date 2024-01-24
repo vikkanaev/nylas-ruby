@@ -41,18 +41,18 @@ def on_message(delta)
   delta
 end
 
-describe Nylas::Tunnel do
+describe NylasV3::Tunnel do
   let(:client) do
-    Nylas::HttpClient.new(
+    NylasV3::HttpClient.new(
       app_id: "not-real",
       app_secret: "also-not-real"
     )
   end
   let(:api) do
     instance_double(
-      Nylas::API,
+      NylasV3::API,
       client: client,
-      webhooks: Nylas::Collection.new(model: Nylas::Webhook, api: client)
+      webhooks: NylasV3::Collection.new(model: NylasV3::Webhook, api: client)
     )
   end
 
@@ -100,7 +100,7 @@ describe Nylas::Tunnel do
       described_class.register_webhook_callback(api, callback_domain, tunnel_path, triggers)
 
       expect(client).to have_received(:execute).with(
-        auth_method: Nylas::HttpClient::AuthMethod::BASIC,
+        auth_method: NylasV3::HttpClient::AuthMethod::BASIC,
         method: :post,
         path: "/a/not-real/webhooks",
         payload: JSON.dump(
@@ -245,7 +245,7 @@ describe Nylas::Tunnel do
 
       serialized = described_class.send(:merge_and_create_delta, delta)
 
-      expect(serialized).to be_a(Nylas::Delta)
+      expect(serialized).to be_a(NylasV3::Delta)
       expect(serialized.date).to eql(Time.at(1675098465))
       expect(serialized.object).to eql("message")
       expect(serialized.type).to eql("message.created")

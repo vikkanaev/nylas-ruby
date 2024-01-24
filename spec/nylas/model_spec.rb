@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Nylas::Model do
+describe NylasV3::Model do
   def example_instance_json
     "{ }"
   end
@@ -20,19 +20,19 @@ describe Nylas::Model do
   describe "#save" do
     it "raises a NotImplementedError exception if the model is flagged as not updatable" do
       instance = NotUpdatableModel.from_hash({ id: "model-1234" }, api: api)
-      expect { instance.save }.to raise_error(Nylas::ModelNotUpdatableError)
+      expect { instance.save }.to raise_error(NylasV3::ModelNotUpdatableError)
     end
 
     it "raises a ModelNotCreatable exception if the model is new and is flagged as not creatable" do
       instance = NotCreatableModel.from_hash({}, api: api)
-      expect { instance.save }.to raise_error(Nylas::ModelNotCreatableError)
+      expect { instance.save }.to raise_error(NylasV3::ModelNotCreatableError)
     end
   end
 
   describe "#update" do
     it "raises a NotImplementedError exception if the model is flagged as read only" do
       instance = NotUpdatableModel.from_json(example_instance_json, api: api)
-      expect { instance.update(name: "other") }.to raise_error(Nylas::ModelNotUpdatableError)
+      expect { instance.update(name: "other") }.to raise_error(NylasV3::ModelNotUpdatableError)
     end
 
     it "raises a MissingFieldError if attempting to set a field that does not exist" do
@@ -40,7 +40,7 @@ describe Nylas::Model do
       instance = FullModel.new
       expect do
         instance.update(fake_attribute: "not real")
-      end.to raise_error(Nylas::ModelMissingFieldError, expected_message)
+      end.to raise_error(NylasV3::ModelMissingFieldError, expected_message)
     end
   end
 
@@ -57,7 +57,7 @@ describe Nylas::Model do
       instance.save_all_attributes
 
       expect(api).to have_received(:execute).with(
-        auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+        auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
         method: :put,
         payload: {
           id: "1234",
@@ -83,13 +83,13 @@ describe Nylas::Model do
     it "raises a NotImplementedError exception if the model is flagged as not updatable" do
       instance = NotUpdatableModel.from_hash({ id: "model-1234" }, api: api)
 
-      expect { instance.save_all_attributes }.to raise_error(Nylas::ModelNotUpdatableError)
+      expect { instance.save_all_attributes }.to raise_error(NylasV3::ModelNotUpdatableError)
     end
 
     it "raises a ModelNotCreatable exception if the model is new and is flagged as not creatable" do
       instance = NotCreatableModel.from_hash({}, api: api)
 
-      expect { instance.save_all_attributes }.to raise_error(Nylas::ModelNotCreatableError)
+      expect { instance.save_all_attributes }.to raise_error(NylasV3::ModelNotCreatableError)
     end
   end
 
@@ -111,7 +111,7 @@ describe Nylas::Model do
       instance.update_all_attributes(**update_params)
 
       expect(api).to have_received(:execute).with(
-        auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+        auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
         method: :put,
         payload: update_params.to_json,
         path: "/collection/1234",
@@ -124,7 +124,7 @@ describe Nylas::Model do
     it "raises a NotImplementedError exception if the model is flagged as read only" do
       instance = NotUpdatableModel.from_json(example_instance_json, api: api)
 
-      expect { instance.update_all_attributes(name: "other") }.to raise_error(Nylas::ModelNotUpdatableError)
+      expect { instance.update_all_attributes(name: "other") }.to raise_error(NylasV3::ModelNotUpdatableError)
     end
 
     it "raises a MissingFieldError if attempting to set a field that does not exist" do
@@ -133,7 +133,7 @@ describe Nylas::Model do
 
       expect do
         instance.update_all_attributes(fake_attribute: "not real")
-      end.to raise_error(Nylas::ModelMissingFieldError, expected_message)
+      end.to raise_error(NylasV3::ModelMissingFieldError, expected_message)
     end
   end
 
@@ -150,7 +150,7 @@ describe Nylas::Model do
       instance.reload
       expect(instance.id).to eql "1234"
       expect(instance.string).to eql "I am real"
-      expect { instance.attributes[:fake_attribute] }.to raise_error Nylas::Registry::MissingKeyError
+      expect { instance.attributes[:fake_attribute] }.to raise_error NylasV3::Registry::MissingKeyError
     end
   end
 

@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-describe Nylas::Component do
+describe NylasV3::Component do
   # Deserialize a component's JSON attributes into Ruby objects.
   describe ".from_json" do
     it "Deserializes all the attributes into Ruby objects" do
-      client = Nylas::HttpClient.new(
+      client = NylasV3::HttpClient.new(
         app_id: "not-real",
         app_secret: "also-not-real",
         access_token: "seriously-unreal"
       )
-      api = Nylas::API.new(client: client)
+      api = NylasV3::API.new(client: client)
       data = {
         id: "abc-123",
         account_id: "account-123",
@@ -48,12 +48,12 @@ describe Nylas::Component do
   describe "saving" do
     # Send a POST call for a component with no ID set.
     it "POST with no ID set" do
-      client = Nylas::HttpClient.new(
+      client = NylasV3::HttpClient.new(
         app_id: "not-real",
         app_secret: "also-not-real",
         access_token: "seriously-unreal"
       )
-      api = Nylas::API.new(client: client)
+      api = NylasV3::API.new(client: client)
       data = {
         account_id: "account-123",
         name: "test-component",
@@ -74,7 +74,7 @@ describe Nylas::Component do
       component.save
 
       expect(api).to have_received(:execute).with(
-        auth_method: Nylas::HttpClient::AuthMethod::BASIC,
+        auth_method: NylasV3::HttpClient::AuthMethod::BASIC,
         method: :post,
         path: "/component/not-real",
         payload: JSON.dump(
@@ -94,12 +94,12 @@ describe Nylas::Component do
 
     # Send a PUT call for a component with an ID set.
     it "PUT with ID set" do
-      client = Nylas::HttpClient.new(
+      client = NylasV3::HttpClient.new(
         app_id: "not-real",
         app_secret: "also-not-real",
         access_token: "seriously-unreal"
       )
-      api = Nylas::API.new(client: client)
+      api = NylasV3::API.new(client: client)
       data = {
         id: "abc-123",
         account_id: "account-123",
@@ -121,7 +121,7 @@ describe Nylas::Component do
       scheduler.save
 
       expect(api).to have_received(:execute).with(
-        auth_method: Nylas::HttpClient::AuthMethod::BASIC,
+        auth_method: NylasV3::HttpClient::AuthMethod::BASIC,
         method: :put,
         path: "/component/not-real/abc-123",
         payload: JSON.dump(

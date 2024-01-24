@@ -3,7 +3,7 @@
 require_relative "resource"
 require_relative "../handler/api_operations"
 
-module Nylas
+module NylasV3
   # A collection of redirect URI related API endpoints.
   class RedirectUris < Resource
     include ApiOperations::Get

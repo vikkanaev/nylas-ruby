@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Nylas::JobStatus do
+describe NylasV3::JobStatus do
   it "is not creatable" do
     expect(described_class).not_to be_creatable
   end

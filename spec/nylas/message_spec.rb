@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-describe Nylas::Message do
+describe NylasV3::Message do
   describe ".from_json" do
     it "Deserializes all the attributes into Ruby objects" do
-      api = instance_double(Nylas::API)
+      api = instance_double(NylasV3::API)
       data = { id: "mess-8766", object: "message", account_id: "acc-1234", thread_id: "thread-1234",
                date: 1_511_302_748,
                to: [{ email: "to@example.com", name: "To Example" }],
@@ -131,7 +131,7 @@ describe Nylas::Message do
   describe "#save" do
     context "when `labels` key exists" do
       it "removes `labels` from the payload" do
-        api = instance_double(Nylas::API, execute: JSON.parse("{}"))
+        api = instance_double(NylasV3::API, execute: JSON.parse("{}"))
         data = {
           id: "message-1234",
           labels: [
@@ -147,7 +147,7 @@ describe Nylas::Message do
         message.save
 
         expect(api).to have_received(:execute).with(
-          auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+          auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
           method: :put,
           path: "/messages/message-1234",
           payload: JSON.dump(
@@ -159,7 +159,7 @@ describe Nylas::Message do
     end
 
     it "removes the folder node and replaces with folder_id" do
-      api = instance_double(Nylas::API, execute: JSON.parse("{}"))
+      api = instance_double(NylasV3::API, execute: JSON.parse("{}"))
       data = {
         id: "message-1234",
         folder: { display_name: "Inbox", id: "folder-inbox", name: "inbox" },
@@ -174,7 +174,7 @@ describe Nylas::Message do
       message.save
 
       expect(api).to have_received(:execute).with(
-        auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+        auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
         method: :put,
         path: "/messages/message-1234",
         payload: JSON.dump(
@@ -186,7 +186,7 @@ describe Nylas::Message do
       )
     end
     it "does not overwrite folder_id if set" do
-      api = instance_double(Nylas::API, execute: JSON.parse("{}"))
+      api = instance_double(NylasV3::API, execute: JSON.parse("{}"))
       data = {
         id: "message-1234",
         folder: { display_name: "Inbox", id: "folder-inbox", name: "inbox" },
@@ -202,7 +202,7 @@ describe Nylas::Message do
       message.save
 
       expect(api).to have_received(:execute).with(
-        auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+        auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
         method: :put,
         path: "/messages/message-1234",
         payload: JSON.dump(
@@ -217,7 +217,7 @@ describe Nylas::Message do
 
   describe "#update" do
     it "let's you set the starred, unread, folder, and label ids" do
-      api = instance_double(Nylas::API, execute: JSON.parse("{}"))
+      api = instance_double(NylasV3::API, execute: JSON.parse("{}"))
       message = described_class.from_json('{ "id": "message-1234" }', api: api)
 
       message.update(
@@ -228,7 +228,7 @@ describe Nylas::Message do
       )
 
       expect(api).to have_received(:execute).with(
-        auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+        auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
         method: :put,
         path: "/messages/message-1234",
         payload: JSON.dump(
@@ -243,7 +243,7 @@ describe Nylas::Message do
       )
     end
     it "raises an argument error if the data has any keys that aren't allowed to be updated" do
-      api = instance_double(Nylas::API, execute: "{}")
+      api = instance_double(NylasV3::API, execute: "{}")
       message = described_class.from_json('{ "id": "message-1234" }', api: api)
       expect do
         message.update(subject: "A new subject!")
@@ -254,14 +254,14 @@ describe Nylas::Message do
   describe "update_folder" do
     it "moves message to new `folder`" do
       folder_id = "9999"
-      api = instance_double(Nylas::API, execute: "{}")
+      api = instance_double(NylasV3::API, execute: "{}")
       message = described_class.from_json('{ "id": "message-1234" }', api: api)
       allow(api).to receive(:execute)
 
       message.update_folder(folder_id)
 
       expect(api).to have_received(:execute).with(
-        auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+        auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
         method: :put,
         path: "/messages/message-1234",
         payload: { folder_id: folder_id }.to_json,
@@ -272,7 +272,7 @@ describe Nylas::Message do
 
   describe "#expanded" do
     it "fetch or return expanded version of message" do
-      api = instance_double(Nylas::API, execute: "{}")
+      api = instance_double(NylasV3::API, execute: "{}")
       message = described_class.from_json('{ "id": "message-1234" }', api: api)
       data = { id: "draft-1234",
                headers: { "In-Reply-To": "<evh5uy0shhpm5d0le89goor17-0@example.com>",
@@ -290,7 +290,7 @@ describe Nylas::Message do
       expect(message.expanded.headers.references[0]).to eql "<evh5uy0shhpm5d0le89goor17-0@example.com>"
     end
     it "transfers api to attributes that need it" do
-      api = instance_double(Nylas::API, execute: "{}")
+      api = instance_double(NylasV3::API, execute: "{}")
       message = described_class.from_json('{ "id": "message-1234" }', api: api)
       data = { id: "draft-1234",
                headers: { "In-Reply-To": "<evh5uy0shhpm5d0le89goor17-0@example.com>",

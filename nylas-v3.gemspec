@@ -3,9 +3,9 @@
 require "./gem_config"
 
 Gem::Specification.new do |gem|
-  gem.name = "nylas"
+  gem.name = "nylas-v3"
   gem.summary = %(Gem for interacting with the Nylas API)
-  gem.version = Nylas::VERSION
+  gem.version = NylasV3::VERSION
   gem.email = "support@nylas.com"
   gem.authors = ["Nylas, Inc."]
   gem.license = "MIT"

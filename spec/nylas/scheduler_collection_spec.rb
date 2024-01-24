@@ -2,11 +2,11 @@
 
 require "spec_helper"
 
-describe Nylas::SchedulerCollection do
+describe NylasV3::SchedulerCollection do
   describe "ProviderAvailability" do
     it "(getGoogleAvailability) should call the correct endpoint" do
-      api = instance_double(Nylas::API, execute: JSON.parse("{}"))
-      scheduler_collection = described_class.new(model: Nylas::Scheduler, api: api)
+      api = instance_double(NylasV3::API, execute: JSON.parse("{}"))
+      scheduler_collection = described_class.new(model: NylasV3::Scheduler, api: api)
 
       scheduler_collection.get_google_availability
 
@@ -17,8 +17,8 @@ describe Nylas::SchedulerCollection do
     end
 
     it "(getOffice365Availability) should call the correct endpoint" do
-      api = instance_double(Nylas::API, execute: JSON.parse("{}"))
-      scheduler_collection = described_class.new(model: Nylas::Scheduler, api: api)
+      api = instance_double(NylasV3::API, execute: JSON.parse("{}"))
+      scheduler_collection = described_class.new(model: NylasV3::Scheduler, api: api)
 
       scheduler_collection.get_office_365_availability
 
@@ -43,8 +43,8 @@ describe Nylas::SchedulerCollection do
         created_at: "2021-06-24",
         modified_at: "2021-06-24"
       }
-      api = instance_double(Nylas::API, execute: scheduler_json)
-      scheduler_collection = described_class.new(model: Nylas::Scheduler, api: api)
+      api = instance_double(NylasV3::API, execute: scheduler_json)
+      scheduler_collection = described_class.new(model: NylasV3::Scheduler, api: api)
 
       scheduler = scheduler_collection.get_page_slug("test-slug")
 
@@ -73,8 +73,8 @@ describe Nylas::SchedulerCollection do
           start: 1636728347
         }
       ]
-      api = instance_double(Nylas::API, execute: scheduler_time_slots)
-      scheduler_collection = described_class.new(model: Nylas::Scheduler, api: api)
+      api = instance_double(NylasV3::API, execute: scheduler_time_slots)
+      scheduler_collection = described_class.new(model: NylasV3::Scheduler, api: api)
 
       timeslots = scheduler_collection.get_available_time_slots("test-slug")
 
@@ -92,8 +92,8 @@ describe Nylas::SchedulerCollection do
     end
 
     it "cancel booking" do
-      api = instance_double(Nylas::API, execute: JSON.parse("{}"))
-      scheduler_collection = described_class.new(model: Nylas::Scheduler, api: api)
+      api = instance_double(NylasV3::API, execute: JSON.parse("{}"))
+      scheduler_collection = described_class.new(model: NylasV3::Scheduler, api: api)
 
       scheduler_collection.cancel_booking("test-slug", "test-edit-hash", "test")
 
@@ -125,17 +125,17 @@ describe Nylas::SchedulerCollection do
           start_time: 1636728347,
           title: "Test Booking"
         }
-        api = instance_double(Nylas::API, execute: booking_confirmation)
-        scheduler_collection = described_class.new(model: Nylas::Scheduler, api: api)
+        api = instance_double(NylasV3::API, execute: booking_confirmation)
+        scheduler_collection = described_class.new(model: NylasV3::Scheduler, api: api)
 
-        slot = Nylas::SchedulerTimeSlot.new(
+        slot = NylasV3::SchedulerTimeSlot.new(
           account_id: "test-account-id",
           calendar_id: "test-calendar-id",
           emails: ["recipient@example.com"],
           start: Time.at(1636728347),
           end: Time.at(1636731958)
         )
-        timeslot_to_book = Nylas::SchedulerBookingRequest.new(
+        timeslot_to_book = NylasV3::SchedulerBookingRequest.new(
           additional_values: {
             test: "yes"
           },
@@ -207,8 +207,8 @@ describe Nylas::SchedulerCollection do
           start_time: 1636728347,
           title: "Test Booking"
         }
-        api = instance_double(Nylas::API, execute: booking_confirmation)
-        scheduler_collection = described_class.new(model: Nylas::Scheduler, api: api)
+        api = instance_double(NylasV3::API, execute: booking_confirmation)
+        scheduler_collection = described_class.new(model: NylasV3::Scheduler, api: api)
 
         booking_confirmation = scheduler_collection.confirm_booking("test-slug", "test-edit-hash")
 

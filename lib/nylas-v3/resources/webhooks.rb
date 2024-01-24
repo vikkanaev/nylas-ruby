@@ -3,7 +3,7 @@
 require_relative "resource"
 require_relative "../handler/api_operations"
 
-module Nylas
+module NylasV3
   # Module representing the possible 'trigger' values in a Webhook.
   # @see https://developer.nylas.com/docs/api#post/a/client_id/webhooks
   module WebhookTrigger
@@ -24,7 +24,7 @@ module Nylas
     THREAD_REPLIED = "thread.replied"
   end
 
-  # Nylas Webhooks API
+  # NylasV3 Webhooks API
   class Webhooks < Resource
     include ApiOperations::Get
     include ApiOperations::Post

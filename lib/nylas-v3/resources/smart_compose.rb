@@ -3,8 +3,8 @@
 require_relative "resource"
 require_relative "../handler/api_operations"
 
-module Nylas
-  # Nylas Smart Compose API
+module NylasV3
+  # NylasV3 Smart Compose API
   class SmartCompose < Resource
     include ApiOperations::Post
 

@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-require "./lib/nylas/version"
+require "./lib/nylas-v3/version"
 
 # Consistently apply nylas' standard gem data across gems
 module GemConfig
   def self.apply(gem)
-    gem.description = %(Gem for interacting with the Nylas API.)
-    gem.files = Dir.glob("lib/{nylas.rb,nylas/**/*.rb}")
+    gem.description = %(Gem for interacting with the NylasV3 API.)
+    gem.files = Dir.glob("lib/{nylas-v3.rb,nylas-v3/**/*.rb}")
     gem.license = "MIT"
-    gem.version = Nylas::VERSION
+    gem.version = NylasV3::VERSION
     gem.platform = "ruby"
     gem.required_ruby_version = ">= 3.0"
     gem.metadata = metadata
@@ -20,7 +20,7 @@ module GemConfig
 
   def self.add_author_info(gem)
     gem.email = "support@nylas.com"
-    gem.authors = ["Nylas, Inc."]
+    gem.authors = ["NylasV3, Inc."]
   end
 
   def self.metadata

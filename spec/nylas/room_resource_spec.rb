@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Nylas::RoomResource do
+describe NylasV3::RoomResource do
   it "is not creatable" do
     expect(described_class).not_to be_creatable
   end
@@ -49,13 +49,13 @@ describe Nylas::RoomResource do
 
   context "when getting" do
     it "makes a call to the /resources endpoint" do
-      api = instance_double(Nylas::API, execute: "{}")
-      resource = Nylas::Collection.new(model: described_class, api: api)
+      api = instance_double(NylasV3::API, execute: "{}")
+      resource = NylasV3::Collection.new(model: described_class, api: api)
 
       api.execute(resource.to_be_executed)
 
       expect(api).to have_received(:execute).with(
-        auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+        auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
         method: :get,
         path: "/resources",
         headers: {},

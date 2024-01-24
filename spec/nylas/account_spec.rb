@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Nylas::Account do
+describe NylasV3::Account do
   # Allow filtering on an account.
   it "is filterable" do
     expect(described_class).to be_filterable
@@ -45,7 +45,7 @@ describe Nylas::Account do
 
   # Allow an account's metadata to be updated.
   it "can update metadata" do
-    api = instance_double("Nylas::API", execute: { success: true }, app_id: "app-987")
+    api = instance_double("NylasV3::API", execute: { success: true }, app_id: "app-987")
     account = described_class.from_json('{ "id": "acc-1234" }', api: api)
 
     account.metadata = {
@@ -54,7 +54,7 @@ describe Nylas::Account do
     account.save
 
     expect(api).to have_received(:execute).with(
-      auth_method: Nylas::HttpClient::AuthMethod::BASIC,
+      auth_method: NylasV3::HttpClient::AuthMethod::BASIC,
       method: :put,
       path: "/a/app-987/accounts/acc-1234",
       payload: JSON.dump(
@@ -68,13 +68,13 @@ describe Nylas::Account do
 
   # Allow an account to be downgraded. (What does this entail?)
   it "can be downgraded" do
-    api = instance_double("Nylas::API", execute: { success: true }, app_id: "app-987")
+    api = instance_double("NylasV3::API", execute: { success: true }, app_id: "app-987")
     account = described_class.from_json('{ "id": "acc-1234" }', api: api)
 
     expect(account.downgrade).to be_truthy
 
     expect(api).to have_received(:execute).with(
-      auth_method: Nylas::HttpClient::AuthMethod::BASIC,
+      auth_method: NylasV3::HttpClient::AuthMethod::BASIC,
       method: :post,
       path: "/a/app-987/accounts/acc-1234/downgrade",
       payload: nil,
@@ -84,13 +84,13 @@ describe Nylas::Account do
 
   # Allow an account to be upgraded. (What does this entail?)
   it "can be upgraded" do
-    api = instance_double("Nylas::API", execute: { success: true }, app_id: "app-987")
+    api = instance_double("NylasV3::API", execute: { success: true }, app_id: "app-987")
     account = described_class.from_json('{ "id": "acc-1234" }', api: api)
 
     expect(account.upgrade).to be_truthy
 
     expect(api).to have_received(:execute).with(
-      auth_method: Nylas::HttpClient::AuthMethod::BASIC,
+      auth_method: NylasV3::HttpClient::AuthMethod::BASIC,
       method: :post,
       path: "/a/app-987/accounts/acc-1234/upgrade",
       payload: nil,
@@ -100,14 +100,14 @@ describe Nylas::Account do
 
   # Allow an account to revoke all tokens.
   it "can revoke all tokens" do
-    api = instance_double("Nylas::API", execute: { success: true }, app_id: "app-987")
+    api = instance_double("NylasV3::API", execute: { success: true }, app_id: "app-987")
     account = described_class.from_json('{ "id": "acc-1234" }', api: api)
     access_token = "some_access_token"
 
     expect(account.revoke_all(keep_access_token: access_token)).to be_truthy
 
     expect(api).to have_received(:execute).with(
-      auth_method: Nylas::HttpClient::AuthMethod::BASIC,
+      auth_method: NylasV3::HttpClient::AuthMethod::BASIC,
       method: :post,
       path: "/a/app-987/accounts/acc-1234/revoke-all",
       payload: be_json("keep_access_token" => access_token),
@@ -117,13 +117,13 @@ describe Nylas::Account do
 
   # Allow an account to be destroyed.
   it "can be destroyed" do
-    api = instance_double("Nylas::API", execute: { success: true }, app_id: "app-987")
+    api = instance_double("NylasV3::API", execute: { success: true }, app_id: "app-987")
     account = described_class.from_json('{ "id": "acc-1234" }', api: api)
 
     expect(account.destroy).to be_truthy
 
     expect(api).to have_received(:execute).with(
-      auth_method: Nylas::HttpClient::AuthMethod::BASIC,
+      auth_method: NylasV3::HttpClient::AuthMethod::BASIC,
       method: :delete,
       path: "/a/app-987/accounts/acc-1234",
       payload: nil,
@@ -133,7 +133,7 @@ describe Nylas::Account do
 
   # Allow an account to return token information.
   it "can return token information" do
-    api = instance_double("Nylas::API", app_id: "app-987")
+    api = instance_double("NylasV3::API", app_id: "app-987")
     account = described_class.from_json('{ "id": "acc-1234" }', api: api)
     token_info_response = {
       scopes: "email.send,email.modify,calendar",
@@ -146,7 +146,7 @@ describe Nylas::Account do
     token_info = account.token_info("test-token")
 
     expect(api).to have_received(:execute).with(
-      auth_method: Nylas::HttpClient::AuthMethod::BASIC,
+      auth_method: NylasV3::HttpClient::AuthMethod::BASIC,
       method: :post,
       path: "/a/app-987/accounts/acc-1234/token-info",
       payload: be_json("access_token" => "test-token"),

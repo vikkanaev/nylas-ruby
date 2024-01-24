@@ -4,7 +4,7 @@ require_relative "resource"
 require_relative "redirect_uris"
 require_relative "../handler/api_operations"
 
-module Nylas
+module NylasV3
   # Application
   class Applications < Resource
     include ApiOperations::Get

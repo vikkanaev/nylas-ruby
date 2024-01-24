@@ -1,19 +1,19 @@
 # frozen_string_literal: true
 
-module Nylas
+module NylasV3
   Error = Class.new(::StandardError)
 
   # Base error class for API-related errors.
-  class AbstractNylasApiError < Error; end
+  class AbstractNylasV3ApiError < Error; end
 
   # Base error class for SDK-related errors.
-  class AbstractNylasSdkError < Error; end
+  class AbstractNylasV3SdkError < Error; end
 
-  # Error class representing a failed parse of a JSON response from the Nylas API.
-  class JsonParseError < AbstractNylasSdkError; end
+  # Error class representing a failed parse of a JSON response from the NylasV3 API.
+  class JsonParseError < AbstractNylasV3SdkError; end
 
-  # Error class representing a failed response from the Nylas API.
-  class NylasApiError < AbstractNylasApiError
+  # Error class representing a failed response from the NylasV3 API.
+  class NylasV3ApiError < AbstractNylasV3ApiError
     attr_accessor :type, :request_id, :provider_error, :status_code
 
     # Initializes an error and assigns the given attributes to it.
@@ -33,7 +33,7 @@ module Nylas
 
     # Parses the error response.
     #
-    # @param response [Hash] Response from the Nylas API.
+    # @param response [Hash] Response from the NylasV3 API.
     # @param status_code [Integer] Error status code.
     def self.parse_error_response(response, status_code)
       new(
@@ -45,8 +45,8 @@ module Nylas
     end
   end
 
-  # Error class representing a failed response from the Nylas OAuth integration.
-  class NylasOAuthError < AbstractNylasApiError
+  # Error class representing a failed response from the NylasV3 OAuth integration.
+  class NylasV3OAuthError < AbstractNylasV3ApiError
     attr_accessor :error, :error_description, :error_uri, :error_code, :status_code
 
     # Initializes an error and assigns the given attributes to it.
@@ -66,16 +66,16 @@ module Nylas
     end
   end
 
-  # Error class representing a timeout from the Nylas SDK.
-  class NylasSdkTimeoutError < AbstractNylasSdkError
+  # Error class representing a timeout from the NylasV3 SDK.
+  class NylasV3SdkTimeoutError < AbstractNylasV3SdkError
     attr_accessor :url, :timeout
 
     # Initializes an error and assigns the given attributes to it.
     # @param url [String] URL that timed out.
     # @param timeout [Integer] Timeout in seconds.
-    # @return [NylasSdkTimeoutError] The error object.
+    # @return [NylasV3SdkTimeoutError] The error object.
     def initialize(url, timeout)
-      super("Nylas SDK timed out before receiving a response from the server.")
+      super("NylasV3 SDK timed out before receiving a response from the server.")
       self.url = url
       self.timeout = timeout
     end

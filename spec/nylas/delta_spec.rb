@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Nylas::Delta do
+describe NylasV3::Delta do
   # Initialize Delta.
   it "initialize data" do
     data = {
@@ -65,7 +65,7 @@ describe Nylas::Delta do
 
       delta = described_class.new(**data)
 
-      expect(delta.model).to be_a(Nylas::Message)
+      expect(delta.model).to be_a(NylasV3::Message)
     end
 
     # Return nil if the object is nil.

@@ -6,14 +6,14 @@ require "spec_helper"
 # rubocop:disable Rspec/NestedGroups
 # rubocop:disable RSpec/MultipleMemoizedHelpers
 
-describe Nylas::NativeAuthentication do
+describe NylasV3::NativeAuthentication do
   describe "#authenticate" do
     context "when called return_full_response parameter" do
       let(:client) do
-        Nylas::HttpClient.new(app_id: "not-real", app_secret: "also-not-real",
+        NylasV3::HttpClient.new(app_id: "not-real", app_secret: "also-not-real",
                               access_token: "seriously-unreal")
       end
-      let(:api) { Nylas::API.new(client: client) }
+      let(:api) { NylasV3::API.new(client: client) }
       let(:scopes) { "email,calendar,contacts" }
       let(:scopes_array) { %w[email calendar contacts] }
       let(:token_response) { { access_token: "fake-token", other_data: "other-data" } }
@@ -61,7 +61,7 @@ describe Nylas::NativeAuthentication do
     end
 
     it "sets all scopes by default" do
-      client = Nylas::HttpClient.new(
+      client = NylasV3::HttpClient.new(
         app_id: "not-real",
         app_secret: "also-not-real",
         access_token: "seriously-unreal"
@@ -74,7 +74,7 @@ describe Nylas::NativeAuthentication do
         method: :post, path: "/connect/token",
         payload: be_json_including("code" => 1234)
       ).and_return(access_token: "fake-token")
-      api = Nylas::API.new(client: client)
+      api = NylasV3::API.new(client: client)
 
       expect(
         api.authenticate(
@@ -87,7 +87,7 @@ describe Nylas::NativeAuthentication do
     end
 
     it "allows arrays of one scope" do
-      client = Nylas::HttpClient.new(
+      client = NylasV3::HttpClient.new(
         app_id: "not-real",
         app_secret: "also-not-real",
         access_token: "seriously-unreal"
@@ -100,7 +100,7 @@ describe Nylas::NativeAuthentication do
         method: :post, path: "/connect/token",
         payload: be_json_including("code" => 1234)
       ).and_return(access_token: "fake-token")
-      api = Nylas::API.new(client: client)
+      api = NylasV3::API.new(client: client)
 
       expect(
         api.authenticate(
@@ -114,7 +114,7 @@ describe Nylas::NativeAuthentication do
     end
 
     it "allows arrays of two scopes" do
-      client = Nylas::HttpClient.new(
+      client = NylasV3::HttpClient.new(
         app_id: "not-real",
         app_secret: "also-not-real",
         access_token: "seriously-unreal"
@@ -127,7 +127,7 @@ describe Nylas::NativeAuthentication do
         method: :post, path: "/connect/token",
         payload: be_json_including("code" => 1234)
       ).and_return(access_token: "fake-token")
-      api = Nylas::API.new(client: client)
+      api = NylasV3::API.new(client: client)
 
       expect(
         api.authenticate(
@@ -141,7 +141,7 @@ describe Nylas::NativeAuthentication do
     end
 
     it "allows string scopes" do
-      client = Nylas::HttpClient.new(
+      client = NylasV3::HttpClient.new(
         app_id: "not-real",
         app_secret: "also-not-real",
         access_token: "seriously-unreal"
@@ -154,7 +154,7 @@ describe Nylas::NativeAuthentication do
         method: :post, path: "/connect/token",
         payload: be_json_including("code" => 1234)
       ).and_return(access_token: "fake-token")
-      api = Nylas::API.new(client: client)
+      api = NylasV3::API.new(client: client)
 
       expect(
         api.authenticate(

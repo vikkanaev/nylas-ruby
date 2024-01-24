@@ -2,15 +2,15 @@
 
 require "spec_helper"
 
-describe Nylas::DeltasCollection do
+describe NylasV3::DeltasCollection do
   # Find a set of delta objects.
   describe "#find_each" do
     # Allow the search to iterate until responses are empty.
     it "supports iterating until the responses are empty" do
-      api = instance_double(Nylas::API)
+      api = instance_double(NylasV3::API)
       allow(api).to receive(:execute)
         .with(
-          auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+          auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
           path: "/delta",
           method: :get,
           query: { cursor: "1", limit: 100, offset: 0 },
@@ -18,7 +18,7 @@ describe Nylas::DeltasCollection do
         ).and_return(deltas: [{ object: "draft" }], cursor_start: "1", cursor_end: "2")
       allow(api).to receive(:execute)
         .with(
-          auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+          auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
           path: "/delta",
           method: :get,
           query: { cursor: "2", limit: 100, offset: 0 },
@@ -26,7 +26,7 @@ describe Nylas::DeltasCollection do
         ).and_return(deltas: [{ object: "message" }], cursor_start: "2", cursor_end: "3")
       allow(api).to receive(:execute)
         .with(
-          auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+          auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
           path: "/delta",
           method: :get,
           query: { cursor: "3", limit: 100, offset: 0 },
@@ -45,14 +45,14 @@ describe Nylas::DeltasCollection do
   # Retrieve the latest results from the latest_cursor endpoint.
   describe "#latest" do
     it "retrieves the results for the cursor that comes from the latest_cursor end point" do
-      api = instance_double(Nylas::API)
+      api = instance_double(NylasV3::API)
       allow(api).to receive(:execute)
         .with(path: "/delta/latest_cursor", method: :post)
         .and_return(cursor: "4")
 
       allow(api).to receive(:execute)
         .with(
-          auth_method: Nylas::HttpClient::AuthMethod::BEARER,
+          auth_method: NylasV3::HttpClient::AuthMethod::BEARER,
           path: "/delta",
           method: :get,
           query: { cursor: "4", limit: 100, offset: 0 },

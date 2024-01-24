@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Nylas::SendGridVerifiedStatus do
+describe NylasV3::SendGridVerifiedStatus do
   it "Deserializes all the attributes into Ruby objects" do
     data = { domain_verified: true, sender_verified: true }
 

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Nylas::NewMessage do
+describe NylasV3::NewMessage do
   describe "#send!" do
     data = {
       reply_to_message_id: "mess-1234",
@@ -18,7 +18,7 @@ describe Nylas::NewMessage do
     }
 
     it "sends the message directly" do
-      api = instance_double(Nylas::API)
+      api = instance_double(NylasV3::API)
 
       allow(api).to receive(:send!)
 

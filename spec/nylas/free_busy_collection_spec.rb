@@ -2,14 +2,14 @@
 
 require "spec_helper"
 
-describe Nylas::FreeBusyCollection do
+describe NylasV3::FreeBusyCollection do
   describe "#each" do
     # Get a collection of FreeBusy objects.
     it "returns collection of `FreeBusy` objects" do
       start_time = 1_609_439_400
       end_time = 1_640_975_400
       emails = ["test@example.com", "anothertest@example.com"]
-      api = instance_double("Nylas::API")
+      api = instance_double("NylasV3::API")
       free_busy_response = [
         {
           object: "free_busy",

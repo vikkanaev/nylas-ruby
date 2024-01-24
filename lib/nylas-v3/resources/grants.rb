@@ -3,7 +3,7 @@
 require_relative "resource"
 require_relative "../handler/api_operations"
 
-module Nylas
+module NylasV3
   # Grants
   class Grants < Resource
     include ApiOperations::Get

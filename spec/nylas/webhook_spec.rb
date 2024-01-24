@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Nylas::Webhook do
+describe NylasV3::Webhook do
   it "is creatable" do
     expect(described_class).to be_creatable
   end
@@ -25,7 +25,7 @@ describe Nylas::Webhook do
 
   describe ".from_json" do
     it "Deserializes all the attributes into Ruby objects" do
-      api = instance_double(Nylas::API)
+      api = instance_double(NylasV3::API)
       data = {
         id: "webhook-123",
         application_id: "app-123",
@@ -48,7 +48,7 @@ describe Nylas::Webhook do
 
   describe "#create" do
     it "Serializes all non-read-only attributes" do
-      api = instance_double(Nylas::API, execute: JSON.parse("{}"), app_id: "app-987")
+      api = instance_double(NylasV3::API, execute: JSON.parse("{}"), app_id: "app-987")
       data = {
         application_id: "app-123",
         callback_url: "https://url.com/callback",
@@ -62,7 +62,7 @@ describe Nylas::Webhook do
       webhook.create
 
       expect(api).to have_received(:execute).with(
-        auth_method: Nylas::HttpClient::AuthMethod::BASIC,
+        auth_method: NylasV3::HttpClient::AuthMethod::BASIC,
         method: :post,
         path: "/a/app-987/webhooks",
         payload: JSON.dump(
@@ -77,7 +77,7 @@ describe Nylas::Webhook do
 
   describe "update" do
     it "Serializes only state" do
-      api = instance_double(Nylas::API, execute: JSON.parse("{}"), app_id: "app-987")
+      api = instance_double(NylasV3::API, execute: JSON.parse("{}"), app_id: "app-987")
       data = {
         id: "webhook-123",
         application_id: "app-123",
@@ -92,7 +92,7 @@ describe Nylas::Webhook do
       webhook.update(state: WebhookState::INACTIVE)
 
       expect(api).to have_received(:execute).with(
-        auth_method: Nylas::HttpClient::AuthMethod::BASIC,
+        auth_method: NylasV3::HttpClient::AuthMethod::BASIC,
         method: :put,
         path: "/a/app-987/webhooks/webhook-123",
         payload: JSON.dump(
@@ -103,7 +103,7 @@ describe Nylas::Webhook do
     end
 
     it "Throws an error if update was called with something other than just state" do
-      api = instance_double(Nylas::API, execute: JSON.parse("{}"), app_id: "app-987")
+      api = instance_double(NylasV3::API, execute: JSON.parse("{}"), app_id: "app-987")
       data = {
         id: "webhook-123",
         application_id: "app-123",
@@ -123,7 +123,7 @@ describe Nylas::Webhook do
 
   describe "save" do
     it "Creates if no id exists" do
-      api = instance_double(Nylas::API, execute: JSON.parse("{}"), app_id: "app-987")
+      api = instance_double(NylasV3::API, execute: JSON.parse("{}"), app_id: "app-987")
       data = {
         application_id: "app-123",
         callback_url: "https://url.com/callback",
@@ -137,7 +137,7 @@ describe Nylas::Webhook do
       webhook.save
 
       expect(api).to have_received(:execute).with(
-        auth_method: Nylas::HttpClient::AuthMethod::BASIC,
+        auth_method: NylasV3::HttpClient::AuthMethod::BASIC,
         method: :post,
         path: "/a/app-987/webhooks",
         payload: JSON.dump(
@@ -150,7 +150,7 @@ describe Nylas::Webhook do
     end
 
     it "Updates if id exists" do
-      api = instance_double(Nylas::API, execute: JSON.parse("{}"), app_id: "app-987")
+      api = instance_double(NylasV3::API, execute: JSON.parse("{}"), app_id: "app-987")
       data = {
         id: "webhook-123",
         application_id: "app-123",
@@ -165,7 +165,7 @@ describe Nylas::Webhook do
       webhook.save
 
       expect(api).to have_received(:execute).with(
-        auth_method: Nylas::HttpClient::AuthMethod::BASIC,
+        auth_method: NylasV3::HttpClient::AuthMethod::BASIC,
         method: :put,
         path: "/a/app-987/webhooks/webhook-123",
         payload: JSON.dump(
@@ -178,7 +178,7 @@ describe Nylas::Webhook do
 
   describe "#destroy" do
     it "Deletes the webhook on the API" do
-      api = instance_double(Nylas::API, execute: JSON.parse("{}"), app_id: "app-987")
+      api = instance_double(NylasV3::API, execute: JSON.parse("{}"), app_id: "app-987")
       data = {
         id: "webhook-123",
         application_id: "app-123",
@@ -193,7 +193,7 @@ describe Nylas::Webhook do
       webhook.destroy
 
       expect(api).to have_received(:execute).with(
-        auth_method: Nylas::HttpClient::AuthMethod::BASIC,
+        auth_method: NylasV3::HttpClient::AuthMethod::BASIC,
         method: :delete,
         path: "/a/app-987/webhooks/webhook-123",
         payload: nil,
